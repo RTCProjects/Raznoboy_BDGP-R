@@ -153,7 +153,11 @@ void	Process_MainProc()	interrupt T0IC_VEC
 	memcpy((uint8*)sensorCnt,(uint8*)sensorCntCopy,sizeof(uint16) * SENSORS);
 	 
 	#ifdef RANGE3 //для 38-х счётчиков расчёт по другой формуле
+		if(Process_GetExternalRange() == EXT_ON)
+			currentDose = Process_CalculateLogDoseRate();
+		else
 			currentDose = Process_CalculateMaximumSumDoseRate();
+		
 			Debug_SetAlgorithmType(1);
 	#else 
 	  //для 21-х расчёт ведется по двум формулам, в зависимости от порога
