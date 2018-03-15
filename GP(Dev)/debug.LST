@@ -1,0 +1,134 @@
+C166 COMPILER V7.53.0.0, DEBUG                                                             03/15/2018 15:00:15 PAGE 1   
+
+
+C166 COMPILER V7.53.0.0, COMPILATION OF MODULE DEBUG
+OBJECT MODULE PLACED IN .\firmwares\debug.obj
+COMPILER INVOKED BY: C:\Keil\C166\BIN\C166.EXE debug.c BROWSE MOD167 DEBUG TABS(2) OBJECT(.\firmwares\debug.obj) 
+
+ stmt lvl     source
+
+    1         #include "debug.h"
+    2         #include "can.h"
+    3         
+    4         static tDebugData debugData;
+    5         
+    6         void Debug_Initialization()
+    7         {
+    8  1        memset(&debugData,0,sizeof(tDebugData));
+    9  1        
+   10  1        debugData.uSerialNumber = SerialNumberBD;
+   11  1        
+   12  1          T6CON = 0x0006;
+   13  1          T6IC = 0x0069;
+   14  1          T6UD = 1;
+   15  1          T6 = 0x6769;
+   16  1        
+   17  1        
+   18  1          Debug_Stop();
+   19  1        
+   20  1      }
+   21         
+   22         void Debug_Process() interrupt T6IC_VEC
+   23         {
+   24  1        uint8 packSize = 0;
+   25  1        uint8 *pPackage = 0;
+   26  1        
+   27  1        debugData.uFlag.uState = T0R;
+   28  1        debugData.uFlag.uRangeNumber = HARDWARE_NUMBER;
+   29  1          pPackage = Debug_CreatePacket(0x01,(uint8*)&debugData,sizeof(tDebugData),&packSize);
+   30  1        
+   31  1        if(pPackage){
+   32  2          
+   33  2          CAN_SendDataPackage(DEBUG_CAN_TX + HARDWARE_NUMBER,pPackage,packSize);
+   34  2          
+   35  2          free(pPackage);
+   36  2        }
+   37  1        T6 = 0x6769;
+   38  1      }
+   39         
+   40         void Debug_Start()
+   41         {
+   42  1        T6R = 1;
+   43  1      }
+   44         
+   45         void Debug_Stop()
+   46         {
+   47  1        T6R = 0;
+   48  1      }
+   49         
+   50         uint8 *Debug_CreatePacket(uint8 cmd,uint8 *pData,uint8 dataSize,uint8 *packSize)
+   51         {
+   52  1        uint8 bufferSize = (uint8)(5 + dataSize);
+   53  1        uint8 *pBuf = (uint8*)malloc(sizeof(uint8) * bufferSize);
+   54  1        
+   55  1        uint16  ks = 0,i = 0;
+C166 COMPILER V7.53.0.0, DEBUG                                                             03/15/2018 15:00:15 PAGE 2   
+
+   56  1        
+   57  1        if(pBuf)
+   58  1        {
+   59  2          pBuf[0] = 0xA5;
+   60  2          pBuf[1] = bufferSize;
+   61  2          pBuf[2] = cmd;
+   62  2          memcpy((pBuf + 3),pData,dataSize);
+   63  2      
+   64  2            for(i = 0;i<bufferSize - 2;i++)
+   65  2              ks+=pBuf[i];
+   66  2          
+   67  2          memcpy((pBuf + (bufferSize - 2)),&ks,2);
+   68  2          
+   69  2          *packSize = bufferSize;
+   70  2        
+   71  2      
+   72  2        }
+   73  1        return pBuf;
+   74  1      }
+   75         
+   76         void Debug_SetCurrentDose(float fDose)
+   77         {
+   78  1        debugData.fCurrentDose = fDose;
+   79  1      }
+   80         void Debug_SetRangeNumber(uint8 uRangeNumber)
+   81         {
+   82  1        debugData.uFlag.uRangeNumber = (uRangeNumber & 0x3);
+   83  1      }
+   84         void Debug_SetQueryFull(uint8 uFull)
+   85         {
+   86  1        debugData.uFlag.uQueryFull = uFull;
+   87  1      }
+   88         void Debug_SetAlgorithmType(uint8 uType)
+   89         {
+   90  1        debugData.uFlag.uAlgorithm = uType;
+   91  1      }
+   92         void Debug_SetCurrentSensorsData(uint8 *pData)
+   93         {
+   94  1        memcpy(debugData.uSensorData,pData,sizeof(uint16) * 12);
+   95  1      }
+   96         void Debug_SetSortSensorsData(uint8* pData)
+   97         {
+   98  1        memcpy(debugData.uSortSensorData,pData,sizeof(uint16) * 12);
+   99  1      }
+  100         
+
+
+MODULE INFORMATION:   INITIALIZED  UNINITIALIZED
+  CODE SIZE        =         520     --------
+  NEAR-CONST SIZE  =    --------     --------
+  FAR-CONST SIZE   =    --------     --------
+  HUGE-CONST SIZE  =    --------     --------
+  XHUGE-CONST SIZE =    --------     --------
+  NEAR-DATA SIZE   =          58     --------
+  FAR-DATA SIZE    =    --------     --------
+  XHUGE-DATA SIZE  =    --------     --------
+  IDATA-DATA SIZE  =    --------     --------
+  SDATA-DATA SIZE  =    --------     --------
+  BDATA-DATA SIZE  =    --------     --------
+  HUGE-DATA SIZE   =    --------     --------
+  BIT SIZE         =    --------     --------
+  INIT'L SIZE      =    --------     --------
+C166 COMPILER V7.53.0.0, DEBUG                                                             03/15/2018 15:00:15 PAGE 3   
+
+END OF MODULE INFORMATION.
+
+
+C166 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

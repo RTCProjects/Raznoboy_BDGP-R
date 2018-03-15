@@ -1,0 +1,104 @@
+C166 COMPILER V7.53.0.0, FLASH                                                             08/29/2017 12:26:02 PAGE 1   
+
+
+C166 COMPILER V7.53.0.0, COMPILATION OF MODULE FLASH
+OBJECT MODULE PLACED IN flash.OBJ
+COMPILER INVOKED BY: C:\Keil\C166\BIN\C166.EXE flash.c BROWSE MOD167 DEBUG TABS(2) 
+
+ stmt lvl     source
+
+    1         #include "flash.h"
+    2         
+    3         void FLASH_EraseSector(unsigned long sector)
+    4         {
+    5  1          unsigned int far *Command_1 = (unsigned int far *) 0x080554;
+    6  1          unsigned int far *Command_2 = (unsigned int far *) 0x080AAA;
+    7  1        
+    8  1          unsigned int far *Command_sector = (unsigned int far *)sector;
+    9  1        
+   10  1          *Command_1 = 0xAA00;
+   11  1        _nop_ (); _nop_ (); _nop_ (); _nop_ (); 
+   12  1        _nop_ (); _nop_ (); _nop_ (); _nop_ (); 
+   13  1        
+   14  1          *Command_2 = 0x0055;
+   15  1        _nop_ (); _nop_ (); _nop_ (); _nop_ ();
+   16  1        _nop_ (); _nop_ (); _nop_ (); _nop_ (); 
+   17  1          
+   18  1          *Command_1 = 0x8000;
+   19  1        _nop_ (); _nop_ (); _nop_ (); _nop_ (); 
+   20  1        _nop_ (); _nop_ (); _nop_ (); _nop_ (); 
+   21  1        
+   22  1          *Command_1 = 0xAA00;
+   23  1        _nop_ (); _nop_ (); _nop_ (); _nop_ (); 
+   24  1        _nop_ (); _nop_ (); _nop_ (); _nop_ (); 
+   25  1        
+   26  1          *Command_2 = 0x0055;
+   27  1        _nop_ (); _nop_ (); _nop_ (); _nop_ (); 
+   28  1        _nop_ (); _nop_ (); _nop_ (); _nop_ (); 
+   29  1        
+   30  1          *Command_sector = 0x0030;
+   31  1        _nop_ (); _nop_ (); _nop_ (); _nop_ (); 
+   32  1        _nop_ (); _nop_ (); _nop_ (); _nop_ (); 
+   33  1        _nop_ (); _nop_ (); _nop_ (); _nop_ (); 
+   34  1        _nop_ (); _nop_ (); _nop_ (); _nop_ ();
+   35  1        _nop_ (); _nop_ (); _nop_ (); _nop_ (); 
+   36  1      }
+   37         
+   38         void FLASH_WriteWord(unsigned long address,unsigned int word)
+   39         {
+   40  1          unsigned int far *Command_1 = (unsigned int far *) 0x080554;
+   41  1          unsigned int far *Command_2 = (unsigned int far *) 0x080AAA;
+   42  1        
+   43  1          unsigned int far *Command_sector = (unsigned int far *)address;
+   44  1        
+   45  1          *Command_1 = 0xAA00;
+   46  1          _nop_ (); _nop_ (); _nop_ (); _nop_ (); 
+   47  1        
+   48  1          *Command_2 = 0x0055;
+   49  1          _nop_ (); _nop_ (); _nop_ (); _nop_ (); 
+   50  1        
+   51  1          *Command_1 = 0xA000;
+   52  1          _nop_ (); _nop_ (); _nop_ (); _nop_ (); 
+   53  1        
+   54  1          *Command_sector = word;
+   55  1      
+C166 COMPILER V7.53.0.0, FLASH                                                             08/29/2017 12:26:02 PAGE 2   
+
+   56  1          _nop_ (); _nop_ (); _nop_ (); _nop_ (); 
+   57  1          _nop_ (); _nop_ (); _nop_ (); _nop_ (); 
+   58  1          _nop_ (); _nop_ (); _nop_ (); _nop_ (); 
+   59  1          _nop_ (); _nop_ (); _nop_ (); _nop_ (); 
+   60  1          _nop_ (); _nop_ (); _nop_ (); _nop_ ();
+   61  1        
+   62  1      }
+   63         void FLASH_FSRControl() 
+   64         {
+   65  1        volatile unsigned int far *FSR = (unsigned int far *) 0x08F000;
+   66  1        volatile unsigned int Register = *FSR;
+   67  1        
+   68  1        while(Register & 0x0001){
+   69  2          Register = *FSR;
+   70  2        }
+   71  1      }
+   72         
+
+
+MODULE INFORMATION:   INITIALIZED  UNINITIALIZED
+  CODE SIZE        =         382     --------
+  NEAR-CONST SIZE  =    --------     --------
+  FAR-CONST SIZE   =    --------     --------
+  HUGE-CONST SIZE  =    --------     --------
+  XHUGE-CONST SIZE =    --------     --------
+  NEAR-DATA SIZE   =    --------     --------
+  FAR-DATA SIZE    =    --------     --------
+  XHUGE-DATA SIZE  =    --------     --------
+  IDATA-DATA SIZE  =    --------     --------
+  SDATA-DATA SIZE  =    --------     --------
+  BDATA-DATA SIZE  =    --------     --------
+  HUGE-DATA SIZE   =    --------     --------
+  BIT SIZE         =    --------     --------
+  INIT'L SIZE      =    --------     --------
+END OF MODULE INFORMATION.
+
+
+C166 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

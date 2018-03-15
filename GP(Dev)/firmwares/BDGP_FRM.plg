@@ -1,0 +1,17 @@
+<html>
+<body>
+<pre>
+<h1>µVision Build Log</h1>
+<h2>Project:</h2>
+D:\Ğàçíîáîé\Firmware\ÁÄÃÏ-Ğ\Raznoboy_BDGP-R\GP(Dev)\firmware.uvproj
+Project File Date:  01/23/2018
+
+<h2>Output:</h2>
+Build target '1887ÂÅ3Ò'
+assembling asmbsl.a66...
+assembling driver.a66...
+compiling process.c...
+linking...
+Program Size: data=5509(near=5509) const=173(near=87) code=10624
+creating hex file from ".\firmwares\BDGP_FRM"...
+".\firmwares\BDGP_FRM" - 0 Error(s), 0 Warning(s).

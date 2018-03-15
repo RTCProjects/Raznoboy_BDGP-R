@@ -1,0 +1,417 @@
+C166 COMPILER V7.53.0.0, PROTOCOL                                                          08/29/2017 12:26:01 PAGE 1   
+
+
+C166 COMPILER V7.53.0.0, COMPILATION OF MODULE PROTOCOL
+OBJECT MODULE PLACED IN protocol.OBJ
+COMPILER INVOKED BY: C:\Keil\C166\BIN\C166.EXE protocol.c BROWSE MOD167 DEBUG TABS(2) 
+
+ stmt lvl     source
+
+    1         #include "protocol.h"
+    2         #include "can.h"
+    3         #include "settings.h"
+    4         #include "process.h"
+    5         #include "system.h"
+    6         
+    7         uint16  timeSpan;     //время измерения (в десятых долях сек)
+    8         uint8   rangeValue;   //номер текущего диапазона (0 - авто)
+    9         
+   10         const uint8 mResetResponse[] = {0x42};
+   11         const uint8 mErrorResponse[] = {0x90};
+   12         
+   13         //команда включения диапазона, первый байт - номер диапазо�
+             -�а, второй байт - статус(включить - выключить)
+   14         const uint8 mStartRangeAuto2[]  = {0x02,0x01,0x01};
+   15         const uint8 mStartRangeAuto3[]  = {0x03,0x01,0x01};
+   16         
+   17         const uint8 mStartRangeManual2[]  = {0x02,0x01,0x00};
+   18         const uint8 mStartRangeManual3[]  = {0x03,0x01,0x00};
+   19         
+   20         
+   21         const uint8 mStopRange2[] = {0x02,0x00};
+   22         const uint8 mStopRange3[] = {0x03,0x00};
+   23         
+   24         
+   25         
+   26         static uint8  dataMsgCounter = 0;
+   27         
+   28         
+   29         
+   30         void Protocol_Initialization()
+   31         {
+   32  1        rangeValue = 0;
+   33  1        timeSpan = 10;
+   34  1        
+   35  1      }
+   36         
+   37         void Protocol_SetRangeValue(uint8 Value)
+   38         {
+   39  1        rangeValue = Value;
+   40  1      }
+   41         
+   42         uint8 Protocol_GetRangeValue()
+   43         {
+   44  1        return rangeValue;
+   45  1      }
+   46         
+   47         void Protocol_TransmitMsgCallback(uint16  canID)
+   48         {
+   49  1        
+   50  1      }
+*** WARNING C47 IN LINE 47 OF protocol.c: 'canID': unreferenced parameter
+   51         //отправка сообщения с параметром
+   52         void Protocol_SendDataMsg(uint8*  pData,uint8 *pValue,uint8 dataSize)
+   53         {
+C166 COMPILER V7.53.0.0, PROTOCOL                                                          08/29/2017 12:26:01 PAGE 2   
+
+   54  1        uint8 pIndex = pData[1];
+   55  1        
+   56  1          memcpy(pData + 4,(uint32*)(pValue),dataSize);
+   57  1        
+   58  1        pData[1] = pIndex;
+   59  1        pData[2] = 0;
+   60  1        
+   61  1        CAN_SendMessage(TX_CMD,pData,8);
+   62  1      }
+   63         //получение параметра от ПО
+   64         void Protocol_GetDataMsg(uint8* pValue, uint8 *pData,uint8  dataSize,eSaveSate saveState)
+   65         {
+   66  1        memcpy(pValue,pData + 4,dataSize);
+   67  1          if(saveState == E_SAVE_STATE)SETTINGS_Save();
+   68  1        
+   69  1        Protocol_SendDataMsg(pData,(uint8*)pValue,dataSize);
+   70  1      }
+   71         //отправка синхронизационного сообщения
+   72         void Protocol_ResponseDataPackaje(eResponseState responseState)
+   73         {
+   74  1        uint8 pData[2];
+   75  1              pData[0] = 0x40;
+   76  1              pData[1] = (uint8)responseState;
+   77  1        
+   78  1          CAN_SendMessage(TX_DATA,pData,sizeof(pData));
+   79  1      }
+   80         //подтверждение остановки приема данных
+   81         void Protocol_ConfirmStopData()
+   82         {
+   83  1        uint8 pData[2];
+   84  1          pData[0] = 0x41;
+   85  1          pData[1] = 0;
+   86  1        
+   87  1        CAN_SendMessage(TX_DATA,pData,sizeof(pData));
+   88  1      }
+   89         void Protocol_StartMsg()
+   90         {
+   91  1        CAN_SendMessage(TX_RESPONSE,mResetResponse,1);
+   92  1      }
+   93         
+   94         //Заголовочное сообщение данных
+   95         void Protocol_HeaderDataMsg(uint16 counterRate,float averageDose)
+   96         { 
+   97  1        uint8 pData[8];
+   98  1      
+   99  1        dataMsgCounter = 0;
+  100  1        memset(pData,0,sizeof(pData));
+  101  1      
+  102  1          pData[0] = 0x40;
+  103  1          pData[1] = 0xFF;
+  104  1          pData[2] = (uint8)(counterRate & 0x00FF);
+  105  1          pData[3] = (uint8)(counterRate >> 8);
+  106  1      
+  107  1          memcpy(pData + 4,&averageDose,sizeof(float));
+  108  1        
+  109  1        CAN_SendMessage(TX_DATA,pData,sizeof(pData));
+  110  1      }
+  111         void Protocol_CountersMsg(uint16  *pData)
+  112         {
+  113  1        CAN_SendMessage(TX_DATA,(uint8*)pData,8);
+  114  1      }
+  115         void Protocol_DoseRateMsg(float doseValue)
+C166 COMPILER V7.53.0.0, PROTOCOL                                                          08/29/2017 12:26:01 PAGE 3   
+
+  116         {
+  117  1        uint8 pData[8];
+  118  1          
+  119  1          memcpy(pData,&doseValue,sizeof(float));
+  120  1          memset(pData + 4,(uint8)0xFF,sizeof(float));
+  121  1        
+  122  1        CAN_SendMessage(TX_DATA,pData,sizeof(pData));
+  123  1      }
+  124         
+  125         
+  126         void Protocol_ReceiveMsgCallback(uint16 canID, uint8 *pData)
+  127         {
+  128  1        switch(canID)
+  129  1        {
+  130  2            //обработка команды сброса для ведомой платы
+  131  2          #ifndef MAIN_RANGE
+                    case RX_CMD:
+                    {
+                      switch(pData[0])
+                      {
+                        case 0x42:  System_Reset(); break;
+                      }
+                    }break;
+                  #endif
+  140  2            //остальные команды только для главной
+  141  2          #ifdef MAIN_RANGE 
+  142  2            case RX_CMD:  
+  143  2            {
+  144  3              switch(pData[0])
+  145  3              {
+  146  4                case 0x40:
+  147  4                {
+  148  5                  //автоматический режим
+  149  5                  switch(pData[1])
+  150  5                  {
+  151  6                    case 0:
+  152  6                    {
+  153  7                      Process_SetAutoMode(AUTO_ON); //включаем авторежим для 3 диапазона
+  154  7                      Process_Start(); //запускаем измерения в 3 диапазоне
+  155  7                      
+  156  7                        CAN_SendMessage(TX_RESPONSE,pData,2);
+  157  7                    }break;
+  158  6                    
+  159  6                    case 2:
+  160  6                    {
+  161  7                      Process_SetAutoMode(AUTO_OFF);  //мануальный режим
+  162  7                      CAN_SendMessage(TX_CHANGE_RANGE,mStartRangeManual2,3);
+  163  7                      
+  164  7                        CAN_SendMessage(TX_RESPONSE,pData,2);
+  165  7                    }break;
+  166  6                    
+  167  6                    case 3:
+  168  6                    {
+  169  7                      Process_SetAutoMode(AUTO_OFF);  //мануальный режим
+  170  7                      Process_Start(); 
+  171  7                      
+  172  7                        CAN_SendMessage(TX_RESPONSE,pData,2);
+  173  7                    }break;
+  174  6                  }
+  175  5                }break;
+  176  4                
+  177  4                case 0x41:
+C166 COMPILER V7.53.0.0, PROTOCOL                                                          08/29/2017 12:26:01 PAGE 4   
+
+  178  4                { 
+  179  5              
+  180  5                    CAN_SendMessage(TX_CHANGE_RANGE,mStopRange2,2);
+  181  5                  Process_Stop(); 
+  182  5                  CAN_SendMessage(TX_RESPONSE,pData,1);
+  183  5                }break;
+  184  4                
+  185  4                
+  186  4              }
+  187  3            }break;
+  188  2          #endif
+  189  2            
+  190  2          
+  191  2            //принимаем сообщение по ид смены диапазона
+  192  2          case TX_CHANGE_RANGE:
+  193  2          {
+  194  3            switch(pData[0])
+  195  3            {
+  196  4              #ifdef MAIN_RANGE 
+  197  4                case 3:
+  198  4                {
+  199  5                  //устанавливаем авторежим для диапазона приёмника
+  200  5                  if(pData[2] == 1)//принята команда авторежима
+  201  5                    Process_SetAutoMode(AUTO_ON);
+  202  5                  else
+  203  5                    Process_SetAutoMode(AUTO_OFF);
+  204  5                  
+  205  5                  //включаем/выключаем диапазон приёмник
+  206  5                  if(pData[1] == 1)
+  207  5                    Process_Start();
+  208  5                  else
+  209  5                    Process_Stop();
+  210  5                }break;
+  211  4              #else
+                        case 2:
+                        {
+                          //устанавливаем авторежим для диапазона приёмника
+                          if(pData[2] == 1)//принята команда авторежима
+                            Process_SetAutoMode(AUTO_ON);
+                          else
+                            Process_SetAutoMode(AUTO_OFF);
+                          
+                          //включаем/выключаем диапазон приёмник
+                          
+                          if(pData[1] == 1)
+                            Process_Start();
+                          else
+                            Process_Stop();
+                        }break;
+                      #endif
+  228  4            }
+  229  3          }break;
+  230  2            
+  231  2          case RX_DATA: 
+  232  2          {
+  233  3            switch(pData[0])
+  234  3            {
+  235  4              
+  236  4              case 0x04:  //запись параметров
+  237  4              {
+  238  5                switch(pData[1])
+  239  5                {
+C166 COMPILER V7.53.0.0, PROTOCOL                                                          08/29/2017 12:26:01 PAGE 5   
+
+  240  6                  case FACTORS:     Protocol_GetDataMsg((uint8*)&MainSettings.correctionFactors[pData[3]],pData,sizeof(f
+             -loat),E_NO_SAVE_STATE); break;
+  241  6                  case DEADTIME:    Protocol_GetDataMsg((uint8*)&MainSettings.mDeadTime,pData,sizeof(MainSettings.mDead
+             -Time),E_NO_SAVE_STATE); break;
+  242  6                  case EFFICIENCY:  Protocol_GetDataMsg((uint8*)&MainSettings.mEfficiency,pData,sizeof(MainSettings.mE
+             -fficiency),E_NO_SAVE_STATE); break;
+  243  6                  case SENSIVITY:   Protocol_GetDataMsg((uint8*)&MainSettings.mSensivity,pData,sizeof(MainSettings.mSen
+             -sivity),E_NO_SAVE_STATE); break;
+  244  6                  case RANGE:       Protocol_GetDataMsg((uint8*)&MainSettings.rangeLimits,pData,sizeof(MainSettings.range
+             -Limits),E_NO_SAVE_STATE); break;
+  245  6                  
+  246  6                  
+  247  6                  case SAVE_PARAMETRS:
+  248  6                  {
+  249  7                    if(pData[3] == 0xFF)
+  250  7                      SETTINGS_Save();
+  251  7                    if(pData[3] == 0x00){
+  252  8                      SETTINGS_Default();
+  253  8                      SETTINGS_Save();
+  254  8                    }
+  255  7                    CAN_SendMessage(TX_CMD,pData,8);
+  256  7                  }break;
+  257  6                }
+  258  5              }break;
+  259  4              
+  260  4              case 0x05:  //запрос
+  261  4              {
+  262  5                switch(pData[1])
+  263  5                {
+  264  6                  case FACTORS:     Protocol_SendDataMsg(pData,(uint8*)&MainSettings.correctionFactors[pData[3]],sizeof(
+             -float));    break;
+  265  6                  case DEADTIME:    Protocol_SendDataMsg(pData,(uint8*)&MainSettings.mDeadTime,sizeof(MainSettings.mDead
+             -Time));      break;
+  266  6                  case EFFICIENCY:  Protocol_SendDataMsg(pData,(uint8*)&MainSettings.mEfficiency,sizeof(MainSettings.mE
+             -fficiency));  break;
+  267  6                  case SENSIVITY:   Protocol_SendDataMsg(pData,(uint8*)&MainSettings.mSensivity,sizeof(MainSettings.mSe
+             -nsivity));    break;
+  268  6                  case RANGE:       Protocol_SendDataMsg(pData,(uint8*)&MainSettings.rangeLimits,sizeof(MainSettings.rang
+             -eLimits));  break;
+  269  6                  
+  270  6                }
+  271  5              }break;
+  272  4              
+  273  4              
+  274  4            }
+  275  3          }break;
+  276  2        }
+  277  1      /*
+  278  1        if(devID == 0)  //пришло сообщение для всех БД
+  279  1        {
+  280  1          if(pData[0] == 0x01)
+  281  1          { 
+  282  1            CAN_SendMessage(TX_CMD,mResetResponse,8);
+  283  1          }
+  284  1        }
+  285  1        else if(devID == DEVICE_NUMBER) //получили месседж для конкретного блок�
+             -�
+  286  1        {
+  287  1          switch(pData[0])//проверяем индекс команды
+  288  1          {
+  289  1            case 0x04:  //выдать параметр
+  290  1            {
+C166 COMPILER V7.53.0.0, PROTOCOL                                                          08/29/2017 12:26:01 PAGE 6   
+
+  291  1              switch(pData[1])
+  292  1              {
+  293  1              
+  294  1                case FACTORS:
+  295  1                {
+  296  1                  if(pData[3]>=0 && pData[3] < FACTORS_COUNT)
+  297  1                    Protocol_SendDataMsg((uint8*)&MainSettings.correctionFactors[pData[3]],pData,sizeof(float));
+  298  1                }break;
+  299  1                
+  300  1                case DEADTIME:    Protocol_SendDataMsg(pData,(uint8*)&MainSettings.mDeadTime,sizeof(MainSettings.mDead
+             -Time));        break;
+  301  1                case EFFICIENCY:  Protocol_SendDataMsg(pData,(uint8*)&MainSettings.mEfficiency,sizeof(MainSettings.mEf
+             -ficiency));    break;
+  302  1                case SENSIVITY:   Protocol_SendDataMsg(pData,(uint8*)&MainSettings.mSensivity,sizeof(MainSettings.mSen
+             -sivity));      break;
+  303  1                case RANGE:       Protocol_SendDataMsg(pData,(uint8*)&MainSettings.rangeLimits,sizeof(MainSettings.range
+             -Limits));    break;
+  304  1                
+  305  1                default: 
+  306  1                {
+  307  1                  pData[0] = 0xEE;
+  308  1                  pData[2] = pData[1];
+  309  1                  pData[1] = 0x04;
+  310  1                  CAN_SendMessage(TX_ERROR,pData,3);
+  311  1                }break;
+  312  1                
+  313  1              }
+  314  1            }break;
+  315  1            
+  316  1            case 0x05:  //задать параметр
+  317  1            {
+  318  1              switch(pData[1])
+  319  1              {
+  320  1                
+  321  1      
+  322  1                default: 
+  323  1                {
+  324  1                  pData[0] = 0xEE;
+  325  1                  pData[2] = pData[1];
+  326  1                  pData[1] = 0x05;
+  327  1                    CAN_SendMessage(TX_ERROR,pData,3);
+  328  1                }break; 
+  329  1              }
+  330  1              
+  331  1              
+  332  1            }break;
+  333  1            
+  334  1            case 0x40:  //старт измерений
+  335  1            {
+  336  1              Protocol_ResponseDataPackaje(E_ACCEPT_RESPONSE);
+  337  1              Process_Start();
+  338  1              
+  339  1              
+  340  1            }break;
+  341  1            
+  342  1            case 0x41:  //стоп измерений
+  343  1            {
+  344  1              
+  345  1              Protocol_ConfirmStopData();
+  346  1              Process_Stop();
+  347  1              //Protocol_ResponseDataPackaje(E_COMPLETED_RESPONSE);
+  348  1              
+C166 COMPILER V7.53.0.0, PROTOCOL                                                          08/29/2017 12:26:01 PAGE 7   
+
+  349  1              
+  350  1            }break;
+  351  1          }
+  352  1        }
+  353  1        else
+  354  1        {
+  355  1          
+  356  1        }
+  357  1      */
+  358  1      }
+
+
+MODULE INFORMATION:   INITIALIZED  UNINITIALIZED
+  CODE SIZE        =         904     --------
+  NEAR-CONST SIZE  =          18     --------
+  FAR-CONST SIZE   =    --------     --------
+  HUGE-CONST SIZE  =    --------     --------
+  XHUGE-CONST SIZE =    --------     --------
+  NEAR-DATA SIZE   =           4     --------
+  FAR-DATA SIZE    =    --------     --------
+  XHUGE-DATA SIZE  =    --------     --------
+  IDATA-DATA SIZE  =    --------     --------
+  SDATA-DATA SIZE  =    --------     --------
+  BDATA-DATA SIZE  =    --------     --------
+  HUGE-DATA SIZE   =    --------     --------
+  BIT SIZE         =    --------     --------
+  INIT'L SIZE      =           6     --------
+END OF MODULE INFORMATION.
+
+
+C166 COMPILATION COMPLETE.  1 WARNING(S),  0 ERROR(S)

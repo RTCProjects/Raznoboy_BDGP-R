@@ -1,0 +1,261 @@
+<html>
+<body>
+<pre>
+<h1>µVision Build Log</h1>
+<h2>Project:</h2>
+D:\Богомаз\Bogomaz\Firmware\GP\firmware.uvproj
+Project File Date:  12/02/2016
+
+<h2>Output:</h2>
+Build target '1887ВЕ3Т'
+compiling main.c...
+linking...
+Program Size: data=5206(near=5206) const=39(near=9) code=4384
+"BDMG_FRM" - 0 Error(s), 0 Warning(s).
+Load "D:\\Богомаз\\Bogomaz\\Firmware\\GP\\BDMG_FRM" 
+Load "D:\\Богомаз\\Bogomaz\\Firmware\\GP\\BDMG_FRM" 
+Rebuild target '1887ВЕ3Т'
+assembling START_V2.A66...
+assembling driver.a66...
+compiling main.c...
+compiling process.c...
+compiling protocol.c...
+protocol.c(33): warning C47: 'canID': unreferenced parameter
+protocol.c(107): warning C47: 'pData': unreferenced parameter
+compiling can.c...
+compiling settings.c...
+compiling flash.c...
+compiling system.c...
+system.c(8): warning C12: '=': 'long' converted to pointer
+linking...
+Program Size: data=5206(near=5206) const=39(near=9) code=4384
+"BDMG_FRM" - 0 Error(s), 3 Warning(s).
+Load "D:\\Богомаз\\Bogomaz\\Firmware\\GP\\BDMG_FRM" 
+Load "D:\\Богомаз\\Bogomaz\\Firmware\\GP\\BDMG_FRM" 
+Hardware, Software or Watchdog Reset detected.
+Load "D:\\Богомаз\\Bogomaz\\Firmware\\GP\\BDMG_FRM" 
+Erasing...
+Erase Done.
+Programming Done.
+Verify OK.
+Application running ...
+Build target '1887ВЕ3Т'
+compiling process.c...
+linking...
+Program Size: data=5206(near=5206) const=39(near=9) code=4352
+"BDMG_FRM" - 0 Error(s), 0 Warning(s).
+Load "D:\\Богомаз\\Bogomaz\\Firmware\\GP\\BDMG_FRM" 
+Hardware, Software or Watchdog Reset detected.
+Load "D:\\Богомаз\\Bogomaz\\Firmware\\GP\\BDMG_FRM" 
+Erasing...
+Erase Done.
+Programming Done.
+Verify OK.
+Application running ...
+Build target '1887ВЕ3Т'
+assembling driver.a66...
+linking...
+Program Size: data=5206(near=5206) const=39(near=9) code=4344
+"BDMG_FRM" - 0 Error(s), 0 Warning(s).
+Load "D:\\Богомаз\\Bogomaz\\Firmware\\GP\\BDMG_FRM" 
+Hardware, Software or Watchdog Reset detected.
+Load "D:\\Богомаз\\Bogomaz\\Firmware\\GP\\BDMG_FRM" 
+Erasing...
+Erase Done.
+Programming Done.
+Verify OK.
+Application running ...
+Load "D:\\Богомаз\\Bogomaz\\Firmware\\GP\\BDMG_FRM" 
+Rebuild target '1887ВЕ3Т'
+assembling START_V2.A66...
+assembling driver.a66...
+compiling main.c...
+compiling process.c...
+compiling protocol.c...
+protocol.c(33): warning C47: 'canID': unreferenced parameter
+protocol.c(107): warning C47: 'pData': unreferenced parameter
+compiling can.c...
+compiling settings.c...
+compiling flash.c...
+compiling system.c...
+system.c(8): warning C12: '=': 'long' converted to pointer
+linking...
+Program Size: data=5206(near=5206) const=39(near=9) code=4344
+"BDMG_FRM" - 0 Error(s), 3 Warning(s).
+Rebuild target '1887ВЕ3Т'
+assembling START_V2.A66...
+assembling driver.a66...
+compiling main.c...
+compiling process.c...
+compiling protocol.c...
+protocol.c(33): warning C47: 'canID': unreferenced parameter
+protocol.c(107): warning C47: 'pData': unreferenced parameter
+compiling can.c...
+compiling settings.c...
+compiling flash.c...
+compiling system.c...
+system.c(8): warning C12: '=': 'long' converted to pointer
+linking...
+Program Size: data=5206(near=5206) const=39(near=9) code=4344
+creating hex file from "BDGP_FRM"...
+"BDGP_FRM" - 0 Error(s), 3 Warning(s).
+Load "D:\\Богомаз\\Bogomaz\\Firmware\\GP\\BDGP_FRM" 
+Load "D:\\Богомаз\\Bogomaz\\Firmware\\GP\\BDGP_FRM" 
+Hardware, Software or Watchdog Reset detected.
+Load "D:\\Богомаз\\Bogomaz\\Firmware\\GP\\BDGP_FRM" 
+Hardware, Software or Watchdog Reset detected.
+Load "D:\\Богомаз\\Bogomaz\\Firmware\\GP\\BDGP_FRM" 
+Hardware, Software or Watchdog Reset detected.
+Build target '1887ВЕ3Т'
+linking...
+Program Size: data=5206(near=5206) const=39(near=9) code=4344
+creating hex file from "BDGP_FRM"...
+"BDGP_FRM" - 0 Error(s), 0 Warning(s).
+Load "D:\\Богомаз\\Bogomaz\\Firmware\\GP\\BDGP_FRM" 
+Hardware, Software or Watchdog Reset detected.
+Load "D:\\Богомаз\\Bogomaz\\Firmware\\GP\\BDGP_FRM" 
+Build target '1887ВЕ3Т'
+linking...
+Program Size: data=5206(near=5206) const=39(near=9) code=4344
+creating hex file from "BDGP_FRM"...
+"BDGP_FRM" - 0 Error(s), 0 Warning(s).
+Load "D:\\Богомаз\\Bogomaz\\Firmware\\GP\\BDGP_FRM" 
+Load "D:\\Богомаз\\Bogomaz\\Firmware\\GP\\BDGP_FRM" 
+Hardware, Software or Watchdog Reset detected.
+Load "D:\\Богомаз\\Bogomaz\\Firmware\\GP\\BDGP_FRM" 
+Hardware, Software or Watchdog Reset detected.
+Load "D:\\Богомаз\\Bogomaz\\Firmware\\GP\\BDGP_FRM" 
+Hardware, Software or Watchdog Reset detected.
+Load "D:\\Богомаз\\Bogomaz\\Firmware\\GP\\BDGP_FRM" 
+Hardware, Software or Watchdog Reset detected.
+Load "D:\\Богомаз\\Bogomaz\\Firmware\\GP\\BDGP_FRM" 
+Hardware, Software or Watchdog Reset detected.
+Load "D:\\Богомаз\\Bogomaz\\Firmware\\GP\\BDGP_FRM" 
+Hardware, Software or Watchdog Reset detected.
+Load "D:\\Богомаз\\Bogomaz\\Firmware\\GP\\BDGP_FRM" 
+Hardware, Software or Watchdog Reset detected.
+Load "D:\\Богомаз\\Bogomaz\\Firmware\\GP\\BDGP_FRM" 
+Hardware, Software or Watchdog Reset detected.
+Load "D:\\Богомаз\\Bogomaz\\Firmware\\GP\\BDGP_FRM" 
+Hardware, Software or Watchdog Reset detected.
+Load "D:\\Богомаз\\Bogomaz\\Firmware\\GP\\BDGP_FRM" 
+Hardware, Software or Watchdog Reset detected.
+Load "D:\\Богомаз\\Bogomaz\\Firmware\\GP\\BDGP_FRM" 
+Hardware, Software or Watchdog Reset detected.
+Load "D:\\Богомаз\\Bogomaz\\Firmware\\GP\\BDGP_FRM" 
+Hardware, Software or Watchdog Reset detected.
+Load "D:\\Богомаз\\Bogomaz\\Firmware\\GP\\BDGP_FRM" 
+Hardware, Software or Watchdog Reset detected.
+Load "D:\\Богомаз\\Bogomaz\\Firmware\\GP\\BDGP_FRM" 
+Hardware, Software or Watchdog Reset detected.
+Load "D:\\Богомаз\\Bogomaz\\Firmware\\GP\\BDGP_FRM" 
+Hardware, Software or Watchdog Reset detected.
+Load "D:\\Богомаз\\Bogomaz\\Firmware\\GP\\BDGP_FRM" 
+Hardware, Software or Watchdog Reset detected.
+Load "D:\\Богомаз\\Bogomaz\\Firmware\\GP\\BDGP_FRM" 
+Hardware, Software or Watchdog Reset detected.
+Load "D:\\Богомаз\\Bogomaz\\Firmware\\GP\\BDGP_FRM" 
+Hardware, Software or Watchdog Reset detected.
+Load "D:\\Богомаз\\Bogomaz\\Firmware\\GP\\BDGP_FRM" 
+Hardware, Software or Watchdog Reset detected.
+Load "D:\\Богомаз\\Bogomaz\\Firmware\\GP\\BDGP_FRM" 
+Load "D:\\Богомаз\\Bogomaz\\Firmware\\GP\\BDGP_FRM" 
+Hardware, Software or Watchdog Reset detected.
+Load "D:\\Богомаз\\Bogomaz\\Firmware\\GP\\BDGP_FRM" 
+Load "D:\\Богомаз\\Bogomaz\\Firmware\\GP\\BDGP_FRM" 
+Load "D:\\Богомаз\\Bogomaz\\Firmware\\GP\\BDGP_FRM" 
+Load "D:\\Богомаз\\Bogomaz\\Firmware\\GP\\BDGP_FRM" 
+Hardware, Software or Watchdog Reset detected.
+Load "D:\\Богомаз\\Bogomaz\\Firmware\\GP\\BDGP_FRM" 
+Hardware, Software or Watchdog Reset detected.
+Load "D:\\Богомаз\\Bogomaz\\Firmware\\GP\\BDGP_FRM" 
+Hardware, Software or Watchdog Reset detected.
+Load "D:\\Богомаз\\Bogomaz\\Firmware\\GP\\BDGP_FRM" 
+Hardware, Software or Watchdog Reset detected.
+Load "D:\\Богомаз\\Bogomaz\\Firmware\\GP\\BDGP_FRM" 
+Hardware, Software or Watchdog Reset detected.
+Load "D:\\Богомаз\\Bogomaz\\Firmware\\GP\\BDGP_FRM" 
+Hardware, Software or Watchdog Reset detected.
+Load "D:\\Богомаз\\Bogomaz\\Firmware\\GP\\BDGP_FRM" 
+Hardware, Software or Watchdog Reset detected.
+Load "D:\\Богомаз\\Bogomaz\\Firmware\\GP\\BDGP_FRM" 
+Hardware, Software or Watchdog Reset detected.
+Load "D:\\Богомаз\\Bogomaz\\Firmware\\GP\\BDGP_FRM" 
+Hardware, Software or Watchdog Reset detected.
+Load "D:\\Богомаз\\Bogomaz\\Firmware\\GP\\BDGP_FRM" 
+Hardware, Software or Watchdog Reset detected.
+Load "D:\\Богомаз\\Bogomaz\\Firmware\\GP\\BDGP_FRM" 
+Hardware, Software or Watchdog Reset detected.
+Load "D:\\Богомаз\\Bogomaz\\Firmware\\GP\\BDGP_FRM" 
+Hardware, Software or Watchdog Reset detected.
+Load "D:\\Богомаз\\Bogomaz\\Firmware\\GP\\BDGP_FRM" 
+Hardware, Software or Watchdog Reset detected.
+Load "D:\\Богомаз\\Bogomaz\\Firmware\\GP\\BDGP_FRM" 
+Load "D:\\Богомаз\\Bogomaz\\Firmware\\GP\\BDGP_FRM" 
+Hardware, Software or Watchdog Reset detected.
+Load "D:\\Богомаз\\Bogomaz\\Firmware\\GP\\BDGP_FRM" 
+Erasing...
+Erase Done.
+Programming Done.
+Verify OK.
+Application running ...
+Load "D:\\Богомаз\\Bogomaz\\Firmware\\GP\\BDGP_FRM" 
+Erasing...
+Erase Done.
+Programming Done.
+Verify OK.
+Application running ...
+Load "D:\\Богомаз\\Bogomaz\\Firmware\\GP\\BDGP_FRM" 
+Erasing...
+Erase Done.
+Programming Done.
+Verify OK.
+Application running ...
+Load "D:\\Богомаз\\Bogomaz\\Firmware\\GP\\BDGP_FRM" 
+Erasing...
+Erase Done.
+Programming Done.
+Verify OK.
+Application running ...
+Load "D:\\Богомаз\\Bogomaz\\Firmware\\GP\\BDGP_FRM" 
+Erasing...
+Erase Done.
+Programming Done.
+Verify OK.
+Application running ...
+Load "D:\\Богомаз\\Bogomaz\\Firmware\\GP\\BDGP_FRM" 
+Erasing...
+Erase Done.
+Programming Done.
+Verify OK.
+Application running ...
+Load "D:\\Богомаз\\Bogomaz\\Firmware\\GP\\BDGP_FRM" 
+Erasing...
+Erase Done.
+Programming Done.
+Verify OK.
+Application running ...
+Load "D:\\Богомаз\\Bogomaz\\Firmware\\GP\\BDGP_FRM" 
+Load "D:\\Богомаз\\Bogomaz\\Firmware\\GP\\BDGP_FRM" 
+Erasing...
+Erase Done.
+Programming Done.
+Verify OK.
+Application running ...
+Load "D:\\Богомаз\\Bogomaz\\Firmware\\GP\\BDGP_FRM" 
+Erasing...
+Erase Done.
+Programming Done.
+Verify OK.
+Application running ...
+Load "D:\\Богомаз\\Bogomaz\\Firmware\\GP\\BDGP_FRM" 
+Load "D:\\Богомаз\\Bogomaz\\Firmware\\GP\\BDGP_FRM" 
+Load "D:\\Богомаз\\Bogomaz\\Firmware\\GP\\BDGP_FRM" 
+Hardware, Software or Watchdog Reset detected.
+Load "D:\\Богомаз\\Bogomaz\\Firmware\\GP\\BDGP_FRM" 
+Hardware, Software or Watchdog Reset detected.
+Load "D:\\Богомаз\\Bogomaz\\Firmware\\GP\\BDGP_FRM" 
+Load "D:\\Богомаз\\Bogomaz\\Firmware\\GP\\BDGP_FRM" 
+Hardware, Software or Watchdog Reset detected.
+Load "D:\\Богомаз\\Bogomaz\\Firmware\\GP\\BDGP_FRM" 
+Hardware, Software or Watchdog Reset detected.
