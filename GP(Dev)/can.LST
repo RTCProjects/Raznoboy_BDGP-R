@@ -1,4 +1,4 @@
-C166 COMPILER V7.53.0.0, CAN                                                               03/15/2018 15:00:16 PAGE 1   
+C166 COMPILER V7.53.0.0, CAN                                                               03/26/2018 10:37:43 PAGE 1   
 
 
 C166 COMPILER V7.53.0.0, COMPILATION OF MODULE CAN
@@ -62,7 +62,7 @@ COMPILER INVOKED BY: C:\Keil\C166\BIN\C166.EXE can.c BROWSE MOD167 DEBUG TABS(2)
    53  1      }
    54         
    55         
-C166 COMPILER V7.53.0.0, CAN                                                               03/15/2018 15:00:16 PAGE 2   
+C166 COMPILER V7.53.0.0, CAN                                                               03/26/2018 10:37:43 PAGE 2   
 
    56         void CAN_Interrupt2() interrupt 0x56      
    57         {
@@ -126,7 +126,7 @@ COMPILER INVOKED BY: C:\Keil\C166\BIN\C166.EXE can.c BROWSE MOD167 DEBUG TABS(2)
   114  2                
   115  2                SRST
   116  2              }*/
-C166 COMPILER V7.53.0.0, CAN                                                               03/15/2018 15:00:16 PAGE 3   
+C166 COMPILER V7.53.0.0, CAN                                                               03/26/2018 10:37:43 PAGE 3   
 
   117  2            }
   118  1          if(msgData[0] == 0xD3 && msgData[1] == 0x3D && msgData[2] == 0x00){
@@ -190,7 +190,7 @@ COMPILER INVOKED BY: C:\Keil\C166\BIN\C166.EXE can.c BROWSE MOD167 DEBUG TABS(2)
   176  1        
   177  1        /*
   178  1          Список областей сообщений
-C166 COMPILER V7.53.0.0, CAN                                                               03/15/2018 15:00:16 PAGE 4   
+C166 COMPILER V7.53.0.0, CAN                                                               03/26/2018 10:37:43 PAGE 4   
 
   179  1        
   180  1          На приём
@@ -244,17 +244,17 @@ COMPILER INVOKED BY: C:\Keil\C166\BIN\C166.EXE can.c BROWSE MOD167 DEBUG TABS(2)
   225  1        CAN_Message_16[5].MOFCRH = 0x0801;  //разрешить прерываение на прием 
   226  1      
   227  1        #ifdef RANGE3
-                  //225 - для расширенного диапазона
-                  CAN_Message_16[6].MOCTRH = 0x0080;
-                  CAN_Message_16[6].MOCTRL = 0x0000;
-                  CAN_Message_16[6].MOIPRL = 0x0005;  // выбор линии прерываний по приему - 5
-                  CAN_Message_16[6].MOFCRH = 0x0801;  //разрешить прерываение на прием   
-                #endif
+  228  1          //225 - для расширенного диапазона
+  229  1          CAN_Message_16[6].MOCTRH = 0x0080;
+  230  1          CAN_Message_16[6].MOCTRL = 0x0000;
+  231  1          CAN_Message_16[6].MOIPRL = 0x0005;  // выбор линии прерываний по приему - 5
+  232  1          CAN_Message_16[6].MOFCRH = 0x0801;  //разрешить прерываение на прием   
+  233  1        #endif
   234  1        
   235  1      
   236  1      
   237  1        System_Delay(10);
-C166 COMPILER V7.53.0.0, CAN                                                               03/15/2018 15:00:16 PAGE 5   
+C166 COMPILER V7.53.0.0, CAN                                                               03/26/2018 10:37:43 PAGE 5   
 
   238  1        
   239  1        CAN_Message_16[0].MOARH = 0x8000;  // идентификатор 000(XXX)h - динамически ИД
@@ -276,9 +276,9 @@ COMPILER INVOKED BY: C:\Keil\C166\BIN\C166.EXE can.c BROWSE MOD167 DEBUG TABS(2)
   255  1        CAN_Message_16[5].MOAMRH = 0x3FFF; // маска идентификатора 
   256  1        
   257  1        #ifdef RANGE3
-                  CAN_Message_16[6].MOARH = 0x8894;  // идентификатор 225h
-                  CAN_Message_16[6].MOAMRH = 0x3FFF; // маска идентификатора
-                #endif
+  258  1          CAN_Message_16[6].MOARH = 0x8894;  // идентификатор 225h
+  259  1          CAN_Message_16[6].MOAMRH = 0x3FFF; // маска идентификатора
+  260  1        #endif
   261  1      
   262  1        System_Delay(10);
   263  1        
@@ -311,14 +311,14 @@ COMPILER INVOKED BY: C:\Keil\C166\BIN\C166.EXE can.c BROWSE MOD167 DEBUG TABS(2)
   290  1         _nop_(); _nop_(); _nop_(); _nop_(); _nop_(); _nop_();   
   291  1        
   292  1        #ifdef RANGE3
-                  PANCTR_H = 0x0106;         // message object 6 -> List 1
-                  PANCTR = 0x0002;             
-                    _nop_(); _nop_(); _nop_(); _nop_(); _nop_(); _nop_();    
-                #endif
+  293  1          PANCTR_H = 0x0106;         // message object 6 -> List 1
+  294  1          PANCTR = 0x0002;             
+  295  1            _nop_(); _nop_(); _nop_(); _nop_(); _nop_(); _nop_();    
+  296  1        #endif
   297  1          
   298  1      
   299  1      
-C166 COMPILER V7.53.0.0, CAN                                                               03/15/2018 15:00:16 PAGE 6   
+C166 COMPILER V7.53.0.0, CAN                                                               03/26/2018 10:37:43 PAGE 6   
 
   300  1        CAN_Message_16[0].MOCTRH = 0x0020; 
   301  1        CAN_Message_16[0].MOCTRL = 0x0000;
@@ -339,9 +339,9 @@ COMPILER INVOKED BY: C:\Keil\C166\BIN\C166.EXE can.c BROWSE MOD167 DEBUG TABS(2)
   316  1        CAN_Message_16[5].MOCTRL = 0x0000;  
   317  1        
   318  1        #ifdef RANGE3
-                  CAN_Message_16[6].MOCTRH = 0x0020; 
-                  CAN_Message_16[6].MOCTRL = 0x0000;      
-                #endif
+  319  1          CAN_Message_16[6].MOCTRH = 0x0020; 
+  320  1          CAN_Message_16[6].MOCTRL = 0x0000;      
+  321  1        #endif
   322  1        
   323  1      }
   324         void CAN_SendDataPackage(uint16 id,uint8  *pData, uint8 packSize)
@@ -382,7 +382,7 @@ COMPILER INVOKED BY: C:\Keil\C166\BIN\C166.EXE can.c BROWSE MOD167 DEBUG TABS(2)
   358  1        CAN_Message_16[0].MOFCRH |= (uint16) (Len<<8);
   359  1        
   360  1        CAN_Message_16[0].MOARH &= 0x8000;
-C166 COMPILER V7.53.0.0, CAN                                                               03/15/2018 15:00:16 PAGE 7   
+C166 COMPILER V7.53.0.0, CAN                                                               03/26/2018 10:37:43 PAGE 7   
 
   361  1        CAN_Message_16[0].MOARH |= (uint16)(id<<2);
   362  1        
@@ -425,7 +425,7 @@ COMPILER INVOKED BY: C:\Keil\C166\BIN\C166.EXE can.c BROWSE MOD167 DEBUG TABS(2)
 
 
 MODULE INFORMATION:   INITIALIZED  UNINITIALIZED
-  CODE SIZE        =        1878     --------
+  CODE SIZE        =        1968     --------
   NEAR-CONST SIZE  =    --------     --------
   FAR-CONST SIZE   =    --------     --------
   HUGE-CONST SIZE  =    --------     --------

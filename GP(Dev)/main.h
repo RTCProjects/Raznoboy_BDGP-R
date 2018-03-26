@@ -1,9 +1,9 @@
 #ifndef _MAIN_H
 #define _MAIN_H
 
-#define RANGE1
+//#define RANGE1
 //#define RANGE2
-//#define RANGE3
+#define RANGE3
 
 #define RAND_MAX					3000u
 

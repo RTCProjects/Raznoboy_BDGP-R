@@ -1,4 +1,4 @@
-C166 COMPILER V7.53.0.0, PROCESS                                                           03/15/2018 15:04:25 PAGE 1   
+C166 COMPILER V7.53.0.0, PROCESS                                                           03/26/2018 10:37:42 PAGE 1   
 
 
 C166 COMPILER V7.53.0.0, COMPILATION OF MODULE PROCESS
@@ -62,7 +62,7 @@ COMPILER INVOKED BY: C:\Keil\C166\BIN\C166.EXE process.c BROWSE MOD167 DEBUG TAB
    53         */
    54         
    55         void Process_EXIN1()  interrupt CC8IC_VEC
-C166 COMPILER V7.53.0.0, PROCESS                                                           03/15/2018 15:04:25 PAGE 2   
+C166 COMPILER V7.53.0.0, PROCESS                                                           03/26/2018 10:37:42 PAGE 2   
 
    56         {
    57  1        
@@ -126,7 +126,7 @@ COMPILER INVOKED BY: C:\Keil\C166\BIN\C166.EXE process.c BROWSE MOD167 DEBUG TAB
   115         void Process_EXIN12() interrupt T2IC_VEC
   116         {
   117  1        T8 = 0xFFFF;
-C166 COMPILER V7.53.0.0, PROCESS                                                           03/15/2018 15:04:25 PAGE 3   
+C166 COMPILER V7.53.0.0, PROCESS                                                           03/26/2018 10:37:42 PAGE 3   
 
   118  1        
   119  1        sensorCntCopy[11]++;
@@ -166,71 +166,75 @@ COMPILER INVOKED BY: C:\Keil\C166\BIN\C166.EXE process.c BROWSE MOD167 DEBUG TAB
   153  1        memcpy((uint8*)sensorCnt,(uint8*)sensorCntCopy,sizeof(uint16) * SENSORS);
   154  1         
   155  1        #ifdef RANGE3 //для 38-х счётчиков расчёт по другой формуле
+  156  1          if(Process_GetExternalRange() == EXT_ON)
+  157  1            currentDose = Process_CalculateLogDoseRate();
+  158  1          else
+  159  1            currentDose = Process_CalculateMaximumSumDoseRate();
+  160  1          
+  161  1            Debug_SetAlgorithmType(1);
+  162  1        #else 
+                  //для 21-х расчёт ведется по двум формулам, в зависимости о
+             -т порога
+                  currentDose = Process_CalculateCurrentDoseRate();
+                  Debug_SetAlgorithmType(0);
+                  if(currentDose >= DOSERATE_LIMIT){
                     currentDose = Process_CalculateMaximumSumDoseRate();
                     Debug_SetAlgorithmType(1);
-                #else 
-  159  1          //для 21-х расчёт ведется по двум формулам, в зависимости о
-             -т порога
-  160  1          currentDose = Process_CalculateCurrentDoseRate();
-  161  1          Debug_SetAlgorithmType(0);
-  162  1          if(currentDose >= DOSERATE_LIMIT){
-  163  2            currentDose = Process_CalculateMaximumSumDoseRate();
-  164  2            Debug_SetAlgorithmType(1);
-  165  2          }
-  166  1          /*if(currentDose >= DOSERATE_LIMIT){
-  167  1            currentDose = Process_CalculateMaximumSumDoseRate();
-  168  1            Debug_SetAlgorithmType(1);
-  169  1          }*/
-  170  1        #endif
-  171  1        
-  172  1          //currentDose = Process_CalculateCurrentDoseRate();
-  173  1          counterRate = Process_CalculateCountingRate();
-  174  1        
-  175  1        uCntRate = counterRate;
-  176  1        
-  177  1        Debug_SetCurrentDose(currentDose);
-  178  1        Debug_SetCurrentSensorsData((uint8*)sensorCnt);
-C166 COMPILER V7.53.0.0, PROCESS                                                           03/15/2018 15:04:25 PAGE 4   
+                  }
+                  /*if(currentDose >= DOSERATE_LIMIT){
+                    currentDose = Process_CalculateMaximumSumDoseRate();
+                    Debug_SetAlgorithmType(1);
+                  }*/
+                #endif
+  175  1        
+  176  1          //currentDose = Process_CalculateCurrentDoseRate();
+  177  1          counterRate = Process_CalculateCountingRate();
+  178  1        
+C166 COMPILER V7.53.0.0, PROCESS                                                           03/26/2018 10:37:42 PAGE 4   
 
-  179  1      
-  180  1        if(Process_GetAutoModeStatus() == AUTO_ON)
-  181  1        {
-  182  2        
-  183  2          //отработка переключения диапазона
-  184  2          #ifdef RANGE3
-                    //если включен расширенный режим (4 диапазон)
-                    if(Process_GetExternalRange())
-                    {
-                      //понижаем до 3его
-                      if((counterRate <= rangeMinExt) && firstMeasureCounter >= FIRST_MEASURE_TIME){
-                        Process_Stop();
-                        Process_SetExternalRange(EXT_OFF);
-                        Process_Start();
-                      }
-                      if(counterRate >= rangeMaxExt){
-                        //тут проверка на 20 секунд TODO
-                      }
-                    }
-                    else
-                    {
-                      //если скорость счёта меньше нижнего предела, то останав
+  179  1        uCntRate = counterRate;
+  180  1        
+  181  1        Debug_SetCurrentDose(currentDose);
+  182  1        Debug_SetCurrentSensorsData((uint8*)sensorCnt);
+  183  1      
+  184  1        if(Process_GetAutoModeStatus() == AUTO_ON)
+  185  1        {
+  186  2        
+  187  2          //отработка переключения диапазона
+  188  2          #ifdef RANGE3
+  189  2            //если включен расширенный режим (4 диапазон)
+  190  2            if(Process_GetExternalRange())
+  191  2            {
+  192  3              //понижаем до 3его
+  193  3              if((counterRate <= rangeMinExt) && firstMeasureCounter >= FIRST_MEASURE_TIME){
+  194  4                Process_Stop();
+  195  4                Process_SetExternalRange(EXT_OFF);
+  196  4                Process_Start();
+  197  4              }
+  198  3              if(counterRate >= rangeMaxExt){
+  199  4                //тут проверка на 20 секунд TODO
+  200  4              }
+  201  3            }
+  202  2            else
+  203  2            {
+  204  3              //если скорость счёта меньше нижнего предела, то останав
              -ливаем работу и включаем нижний диапазон
-                      if((counterRate <= rangeMin) && firstMeasureCounter >= FIRST_MEASURE_TIME){
-                        
-                        Process_Stop();
-                        CAN_SendMessage(TX_CHANGE_RANGE,mStartRangeAuto2,3);
-                      }
-                      if(counterRate >= rangeMaxExt){
-                        Process_Stop();
-                        Process_SetExternalRange(EXT_ON);
-                        Process_Start();
-                      }
-                    }
-                  
-              
-                  #endif
-  215  2            
-  216  2          #ifdef RANGE2
+  205  3              if((counterRate <= rangeMin) && firstMeasureCounter >= FIRST_MEASURE_TIME){
+  206  4                
+  207  4                Process_Stop();
+  208  4                CAN_SendMessage(TX_CHANGE_RANGE,mStartRangeAuto2,3);
+  209  4              }
+  210  3              if(counterRate >= rangeMaxExt){
+  211  4                Process_Stop();
+  212  4                Process_SetExternalRange(EXT_ON);
+  213  4                Process_Start();
+  214  4              }
+  215  3            }
+  216  2          
+  217  2      
+  218  2          #endif
+  219  2            
+  220  2          #ifdef RANGE2
                     if((counterRate <= rangeMin) && firstMeasureCounter >= FIRST_MEASURE_TIME){
                       
                       Process_Stop();
@@ -241,346 +245,346 @@ COMPILER INVOKED BY: C:\Keil\C166\BIN\C166.EXE process.c BROWSE MOD167 DEBUG TAB
                       CAN_SendMessage(TX_CHANGE_RANGE,mStartRangeAuto3,3);
                     }
                   #endif
-  227  2            
-  228  2          #ifdef RANGE1
-  229  2            if(counterRate >= rangeMax){
-  230  3              Process_Stop();
-  231  3              CAN_SendMessage(TX_CHANGE_RANGE,mStartRangeAuto2,3);
-  232  3            }
-  233  2          #endif      
-  234  2          }
-  235  1        
-  236  1        
-  237  1        //постоянный движок в 2с. только для 2 3 и 4 диапазонов   
-  238  1        #ifndef RANGE1
-                  if(sliderCounter<SLIDER_SIZE){
-C166 COMPILER V7.53.0.0, PROCESS                                                           03/15/2018 15:04:25 PAGE 5   
+  231  2            
+  232  2          #ifdef RANGE1
+                    if(counterRate >= rangeMax){
+                      Process_Stop();
+                      CAN_SendMessage(TX_CHANGE_RANGE,mStartRangeAuto2,3);
+                    }
+                  #endif      
+  238  2          }
+  239  1        
+C166 COMPILER V7.53.0.0, PROCESS                                                           03/26/2018 10:37:42 PAGE 5   
 
-                    sliderQuery[sliderCounter] = currentDose;
-                    sliderCounter++;
+  240  1        
+  241  1        //постоянный движок в 2с. только для 2 3 и 4 диапазонов   
+  242  1        #ifndef RANGE1
+  243  1          if(sliderCounter<SLIDER_SIZE){
+  244  2            sliderQuery[sliderCounter] = currentDose;
+  245  2            sliderCounter++;
+  246  2            
+  247  2            Debug_SetQueryFull(0);
+  248  2          }
+  249  1          
+  250  1          else{
+  251  2            memcpy(&sliderQuery[0],&sliderQuery[1],sizeof(float) * (SLIDER_SIZE - 1));
+  252  2            sliderQuery[SLIDER_SIZE - 1] = currentDose;
+  253  2            
+  254  2            Debug_SetQueryFull(1);
+  255  2          }
+  256  1          for(i = 0;i<SLIDER_SIZE;i++)
+  257  1            averageDose += sliderQuery[i];
+  258  1          
+  259  1          averageDose = averageDose * 0.5f;
+  260  1        #else
+                  //динамический двидок для 1 диапазона
+                  //if(currentDose < SLIDER_30_MAX_LIM){
+                  if(counterRate <= 3){
+                    sliderMax = 30;
+                    if(sliderMode == 2 || sliderMode == 3){   
+                      sliderCounter = 30;
+                      
+                      if(sliderMode == 3)firstMeasureCounter = 0;
+                        
+                      //memset(sliderQuery,0,sizeof(float) * SLIDER_SIZE);
+                    }
+              
+                    if(sliderMode != 1)sliderCounter = 0;
+                    sliderMode = 1;
+                  }
+                  //else if(currentDose >= SLIDER_10_MIN_LIM && currentDose < SLIDER_10_MAX_LIM){
+                  else if(counterRate >= 2.5f && counterRate <= 12){
+                    sliderMax = 10;
+                    if(sliderMode == 3){
+                        sliderCounter = 10;
+                        //memset(sliderQuery,0,sizeof(float) * SLIDER_SIZE);
+                    }
+                    if(sliderMode != 2)sliderCounter = 0;
+                    sliderMode = 2;
+                  }
+                  //else if(currentDose >= SLIDER_2_MIN_LIM) {
+                  else if(counterRate >= 10){
+                    sliderMax = 2;
                     
-                    Debug_SetQueryFull(0);
+                    if(sliderMode != 3)sliderCounter = 0;
+                    sliderMode = 3;
                   }
                   
-                  else{
-                    memcpy(&sliderQuery[0],&sliderQuery[1],sizeof(float) * (SLIDER_SIZE - 1));
-                    sliderQuery[SLIDER_SIZE - 1] = currentDose;
-                    
-                    Debug_SetQueryFull(1);
+                  if(sliderCounter<sliderMax){
+                  sliderQuery[sliderCounter] = currentDose;
+                  sliderCounter++;
                   }
-                  for(i = 0;i<SLIDER_SIZE;i++)
+                
+                  else{
+                    memcpy(&sliderQuery[0],&sliderQuery[1],sizeof(float) * (sliderMax - 1));
+                    sliderQuery[sliderMax - 1] = currentDose;
+C166 COMPILER V7.53.0.0, PROCESS                                                           03/26/2018 10:37:42 PAGE 6   
+
+                  }
+                  
+                  for(i = 0;i<sliderCounter;i++)
                     averageDose += sliderQuery[i];
                   
-                  averageDose = averageDose * 0.5f;
-                #else
-  257  1          //динамический двидок для 1 диапазона
-  258  1          //if(currentDose < SLIDER_30_MAX_LIM){
-  259  1          if(counterRate <= 3){
-  260  2            sliderMax = 30;
-  261  2            if(sliderMode == 2 || sliderMode == 3){   
-  262  3              sliderCounter = 30;
-  263  3              
-  264  3              if(sliderMode == 3)firstMeasureCounter = 0;
-  265  3                
-  266  3              //memset(sliderQuery,0,sizeof(float) * SLIDER_SIZE);
-  267  3            }
-  268  2      
-  269  2            if(sliderMode != 1)sliderCounter = 0;
-  270  2            sliderMode = 1;
-  271  2          }
-  272  1          //else if(currentDose >= SLIDER_10_MIN_LIM && currentDose < SLIDER_10_MAX_LIM){
-  273  1          else if(counterRate >= 2.5f && counterRate <= 12){
-  274  2            sliderMax = 10;
-  275  2            if(sliderMode == 3){
-  276  3                sliderCounter = 10;
-  277  3                //memset(sliderQuery,0,sizeof(float) * SLIDER_SIZE);
-  278  3            }
-  279  2            if(sliderMode != 2)sliderCounter = 0;
-  280  2            sliderMode = 2;
-  281  2          }
-  282  1          //else if(currentDose >= SLIDER_2_MIN_LIM) {
-  283  1          else if(counterRate >= 10){
-  284  2            sliderMax = 2;
-  285  2            
-  286  2            if(sliderMode != 3)sliderCounter = 0;
-  287  2            sliderMode = 3;
-  288  2          }
-  289  1          
-  290  1          if(sliderCounter<sliderMax){
-  291  2          sliderQuery[sliderCounter] = currentDose;
-  292  2          sliderCounter++;
-  293  2          }
-  294  1        
-  295  1          else{
-  296  2            memcpy(&sliderQuery[0],&sliderQuery[1],sizeof(float) * (sliderMax - 1));
-  297  2            sliderQuery[sliderMax - 1] = currentDose;
-  298  2          }
-  299  1          
-  300  1          for(i = 0;i<sliderCounter;i++)
-  301  1            averageDose += sliderQuery[i];
-C166 COMPILER V7.53.0.0, PROCESS                                                           03/15/2018 15:04:25 PAGE 6   
-
-  302  1          
-  303  1          
-  304  1          sliderCounter ? averageDose = averageDose / sliderCounter : currentDose;
-  305  1        #endif
-  306  1        
-  307  1        //формируем пакет данных на отправку
-  308  1        /*
-  309  1          4 сообщения по 8 байт = 32 байта
-  310  1        
-  311  1          1 - заголовок 
-  312  1          2 - 4 - данные счетчиков
-  313  1        */
-  314  1        pSendPackage = (uint8*)malloc(sizeof(uint8) * 32);
-  315  1        
-  316  1        if(pSendPackage /*&& (firstMeasureCounter >= FIRST_MEASURE_TIME)*/){
-  317  2          pSendPackage[0] = 0x40;
-  318  2          pSendPackage[1] = 0xFF;
-  319  2          
-  320  2          memcpy(pSendPackage + 2,&uCntRate,sizeof(uint16));
-  321  2          memcpy(pSendPackage + 4,&averageDose,sizeof(float));
-  322  2          
-  323  2          memcpy(pSendPackage + 8,sensorCnt,sizeof(uint16) * SENSORS);
-  324  2          
-  325  2          #ifdef RANGE3
-                    if(Process_GetExternalRange() == EXT_ON)
-                      CAN_SendDataPackage(TX_DATA_EXT,pSendPackage,32);
-                    else
-                      CAN_SendDataPackage(TX_DATA,pSendPackage,32);
-                  #else
-  331  2              CAN_SendDataPackage(TX_DATA,pSendPackage,32);
-  332  2          #endif
-  333  2        }
-  334  1        
-  335  1        
-  336  1        free(pSendPackage);
-  337  1        /*
-  338  1        Protocol_HeaderDataMsg(counterRate,averageDose);
-  339  1        Protocol_CountersMsg(sensorCnt);
-  340  1        Protocol_CountersMsg(sensorCnt + 4);
-  341  1        Protocol_CountersMsg(sensorCnt + 8);
-  342  1        */
-  343  1        
-  344  1        memset(sensorCntCopy,0,sizeof(uint16) * SENSORS);//обнуляем массив счётчиков
-  345  1      }
-  346         
-  347         //фия расчёта МД по формуле ЧТЗ
-  348         float Process_CalculateCurrentDoseRate()
-  349         {
-  350  1        
-  351  1        
-  352  1        uint16  i = 0;
-  353  1        float numerator = 0;
-  354  1        float denominator = 0;
-  355  1        float dose = 0;
-  356  1        
-  357  1        float leftPart = 0;
-  358  1        float rightPart = 0;
-  359  1        /*
-  360  1          uint16  rangeMax = (uint16)( (MainSettings.rangeLimits >> 16) & 0xFFFF);
-  361  1          uint16  rangeMaxExt = (uint16)( (MainSettingsExt.rangeLimits >> 16) & 0xFFFF);
-  362  1        //проверка на максимальную скорость счёта в массиве счётч
-             -иков
-C166 COMPILER V7.53.0.0, PROCESS                                                           03/15/2018 15:04:25 PAGE 7   
-
-  363  1        #ifdef RANGE3 
-  364  1          uint16  rangeMax = (uint16)( (MainSettings.rangeLimits >> 16) & 0xFFFF);
-  365  1        
-  366  1          for(i = 0;i<SENSORS;i++)
-  367  1            if(sensorCnt[i] > rangeMax)sensorCnt[i] = rangeMax;
-  368  1        #endif
-  369  1        
-  370  1        #ifdef RANGE3 
-  371  1          if(Process_GetExternalRange() == EXT_ON)
-  372  1            for(i = 0;i<SENSORS;i++)if(sensorCnt[i] > rangeMax)sensorCnt[i] = rangeMaxExt;
-  373  1          else
-  374  1            for(i = 0;i<SENSORS;i++)if(sensorCnt[i] > rangeMax)sensorCnt[i] = rangeMax;
-  375  1        #else
-  376  1          for(i = 0;i<SENSORS;i++)
-  377  1            if(sensorCnt[i] > rangeMax)sensorCnt[i] = rangeMax;
-  378  1        #endif
-  379  1        */
-  380  1        
-  381  1        //получаем ограничения счетов по значению мёртвого време�
-             -�и
-  382  1        float fDeadTime = MainSettings.mDeadTime;
-  383  1        float fDeadTimeExt = MainSettingsExt.mDeadTime;
-  384  1        
-  385  1        float fCntLimit = 0,fCntLimitExt = 0;
-  386  1        
-  387  1          fCntLimit = 1.0 / fDeadTime - 1.0f;
-  388  1          fCntLimitExt = 1.0 / fDeadTimeExt - 1.0f;
-  389  1        
-  390  1        #ifdef RANGE3 
-              
                   
-                  if(Process_GetExternalRange() == EXT_ON)
-                    for(i = 0;i<SENSORS;i++)if(sensorCnt[i] > fCntLimit)sensorCnt[i] = fCntLimit;
-                  else
-                    for(i = 0;i<SENSORS;i++)if(sensorCnt[i] > fCntLimit)sensorCnt[i] = fCntLimitExt;
-                #else
-  398  1          for(i = 0;i<SENSORS;i++)
-  399  1            if(sensorCnt[i] > fCntLimit)sensorCnt[i] = fCntLimit;
-  400  1        #endif
-  401  1        
-  402  1          leftPart = 1.0f / (MainSettings.mSensivity * MainSettings.mEfficiency * 1);
-  403  1            
-  404  1            for(i = 0;i<SENSORS;i++)
-  405  1            {
-  406  2              numerator = sensorCnt[i] * MainSettings.correctionFactors[i];
-  407  2              denominator = 1.0f - (sensorCnt[i] * MainSettings.mDeadTime);
-  408  2              
-  409  2              rightPart = rightPart + (numerator / denominator);
-  410  2            }
-  411  1        dose = leftPart * rightPart;
-  412  1        
-  413  1        return dose;
-  414  1      }
-  415         
-  416         //подсчёт МД по формуле суммы трёх максимумов
-  417         float Process_CalculateMaximumSumDoseRate()
-  418         {
-  419  1        float fResult = 0;
-  420  1        float sensorCorrectCnt[SENSORS];
-  421  1        float fMax = 0;
-  422  1        uint8 i = 0,j = 0;
-  423  1        
-C166 COMPILER V7.53.0.0, PROCESS                                                           03/15/2018 15:04:25 PAGE 8   
-
-  424  1        //проверка на максимальную скорость счёта в массиве счётч
-             -иков
-  425  1        /*#ifdef RANGE3 
-  426  1          uint16  rangeMax = (uint16)( (MainSettings.rangeLimits >> 16) & 0xFFFF);
-  427  1        
-  428  1          for(i = 0;i<SENSORS;i++)
-  429  1            if(sensorCnt[i] > rangeMax)sensorCnt[i] = rangeMax;
-  430  1        #endif*/
-  431  1        
-  432  1        memset(sensorCorrectCnt,0,sizeof(float) * SENSORS);
-  433  1        
-  434  1          //получаем откорректированные счета
-  435  1          for(i = 0;i<SENSORS;i++){
-  436  2            sensorCorrectCnt[i] = (sensorCnt[i] * MainSettings.correctionFactors[i]) / (1.0f - (sensorCnt[i] * Main
-             -Settings.mDeadTime));
-  437  2          }
-  438  1          //сортируем массив по возрастанию
-  439  1            for(i = 0;i<SENSORS - 1;i++){
-  440  2              for(j = 0;j<SENSORS - i - 1;j++){
-  441  3                if(sensorCorrectCnt[j] > sensorCorrectCnt[j+1]){
-  442  4                  fMax = sensorCorrectCnt[j];
-  443  4                  sensorCorrectCnt[j] = sensorCorrectCnt[j+1];
-  444  4                  sensorCorrectCnt[j+1] = fMax;
-  445  4                }
-  446  3              }
-  447  2            }
-  448  1          Debug_SetSortSensorsData((uint8*)sensorCorrectCnt);
-  449  1            
-  450  1          fResult = (1.0f / (3.0f * MainSettings.mSensivity)) * (sensorCorrectCnt[11] + sensorCorrectCnt[10] + sen
-             -sorCorrectCnt[9]);
-  451  1            
-  452  1          return fResult;
-  453  1      }
-  454         //подсчёт МД по логарифмической формуле
-  455         float Process_CalculateLogDoseRate()
-  456         {
-  457  1        float fReturn = 0;
-  458  1        float sensorsCorrectionSum = 0;
-  459  1        
-  460  1        uint8 i = 0;
-  461  1        
-  462  1          for(i = 0;i<SENSORS;i++){
-  463  2            sensorsCorrectionSum +=(-MainSettingsExt.correctionFactors[i] * (log(1.0 - sensorCnt[i] * MainSettingsE
-             -xt.pulsePwrPeriod)/MainSettingsExt.pulseDuration));
-  464  2          }
-  465  1          
-  466  1          fReturn = 1.0 / (MainSettingsExt.mSensivity * MainSettingsExt.mEfficiency) * sensorsCorrectionSum;
-  467  1        
-  468  1        return fReturn;
-  469  1      }
-  470         
-  471         float Process_CalculateCountingRate()
-  472         {
-  473  1        float cntRate = 0;
-  474  1        uint16  i = 0;
-  475  1        
-  476  1          for(i = 0;i<SENSORS;i++)
-  477  1              cntRate += sensorCnt[i];
-  478  1            cntRate = cntRate / (float)(MainSettings.mEfficiency /* SENSORS*/); //06.03.17 - корректиров
-             -ка формулы рассчёта средней скрорости счёта
-  479  1        
-  480  1        if(firstMeasureCounter < FIRST_MEASURE_TIME)
-C166 COMPILER V7.53.0.0, PROCESS                                                           03/15/2018 15:04:25 PAGE 9   
-
-  481  1          firstMeasureCounter++;
-  482  1        
-  483  1        return cntRate;
-  484  1      }
-  485         
-  486         void Process_Start()
-  487         {
-  488  1        //перенастройка ШИМ для 3 диапазона
-  489  1        #ifdef RANGE3
-                  if(Process_GetExternalRange())PWM2();
-                  else PWM1();
+                  sliderCounter ? averageDose = averageDose / sliderCounter : currentDose;
                 #endif
-  493  1        
-  494  1        Process_Stop();
-  495  1        
-  496  1        sliderCounter = 0;
-  497  1        firstMeasureCounter = 0;
-  498  1        
-  499  1        memset(sensorCnt,0,sizeof(uint16) * SENSORS);
-  500  1        memset(sensorCntCopy,0,sizeof(uint16) * SENSORS);
-  501  1        
-  502  1        memset(sliderQuery,0,sizeof(float) * SLIDER_SIZE);
-  503  1        /*
-  504  1        Алгоритм запуска измерений
+  310  1        
+  311  1        //формируем пакет данных на отправку
+  312  1        /*
+  313  1          4 сообщения по 8 байт = 32 байта
+  314  1        
+  315  1          1 - заголовок 
+  316  1          2 - 4 - данные счетчиков
+  317  1        */
+  318  1        pSendPackage = (uint8*)malloc(sizeof(uint8) * 32);
+  319  1        
+  320  1        if(pSendPackage /*&& (firstMeasureCounter >= FIRST_MEASURE_TIME)*/){
+  321  2          pSendPackage[0] = 0x40;
+  322  2          pSendPackage[1] = 0xFF;
+  323  2          
+  324  2          memcpy(pSendPackage + 2,&uCntRate,sizeof(uint16));
+  325  2          memcpy(pSendPackage + 4,&averageDose,sizeof(float));
+  326  2          
+  327  2          memcpy(pSendPackage + 8,sensorCnt,sizeof(uint16) * SENSORS);
+  328  2          
+  329  2          #ifdef RANGE3
+  330  2            if(Process_GetExternalRange() == EXT_ON)
+  331  2              CAN_SendDataPackage(TX_DATA_EXT,pSendPackage,32);
+  332  2            else
+  333  2              CAN_SendDataPackage(TX_DATA,pSendPackage,32);
+  334  2          #else
+                      CAN_SendDataPackage(TX_DATA,pSendPackage,32);
+                  #endif
+  337  2        }
+  338  1        
+  339  1        
+  340  1        free(pSendPackage);
+  341  1        /*
+  342  1        Protocol_HeaderDataMsg(counterRate,averageDose);
+  343  1        Protocol_CountersMsg(sensorCnt);
+  344  1        Protocol_CountersMsg(sensorCnt + 4);
+  345  1        Protocol_CountersMsg(sensorCnt + 8);
+  346  1        */
+  347  1        
+  348  1        memset(sensorCntCopy,0,sizeof(uint16) * SENSORS);//обнуляем массив счётчиков
+  349  1      }
+  350         
+  351         //фия расчёта МД по формуле ЧТЗ
+  352         float Process_CalculateCurrentDoseRate()
+  353         {
+  354  1        
+  355  1        
+  356  1        uint16  i = 0;
+  357  1        float numerator = 0;
+  358  1        float denominator = 0;
+  359  1        float dose = 0;
+  360  1        
+  361  1        float leftPart = 0;
+  362  1        float rightPart = 0;
+  363  1        /*
+C166 COMPILER V7.53.0.0, PROCESS                                                           03/26/2018 10:37:42 PAGE 7   
+
+  364  1          uint16  rangeMax = (uint16)( (MainSettings.rangeLimits >> 16) & 0xFFFF);
+  365  1          uint16  rangeMaxExt = (uint16)( (MainSettingsExt.rangeLimits >> 16) & 0xFFFF);
+  366  1        //проверка на максимальную скорость счёта в массиве счётч
+             -иков
+  367  1        #ifdef RANGE3 
+  368  1          uint16  rangeMax = (uint16)( (MainSettings.rangeLimits >> 16) & 0xFFFF);
+  369  1        
+  370  1          for(i = 0;i<SENSORS;i++)
+  371  1            if(sensorCnt[i] > rangeMax)sensorCnt[i] = rangeMax;
+  372  1        #endif
+  373  1        
+  374  1        #ifdef RANGE3 
+  375  1          if(Process_GetExternalRange() == EXT_ON)
+  376  1            for(i = 0;i<SENSORS;i++)if(sensorCnt[i] > rangeMax)sensorCnt[i] = rangeMaxExt;
+  377  1          else
+  378  1            for(i = 0;i<SENSORS;i++)if(sensorCnt[i] > rangeMax)sensorCnt[i] = rangeMax;
+  379  1        #else
+  380  1          for(i = 0;i<SENSORS;i++)
+  381  1            if(sensorCnt[i] > rangeMax)sensorCnt[i] = rangeMax;
+  382  1        #endif
+  383  1        */
+  384  1        
+  385  1        //получаем ограничения счетов по значению мёртвого време�
+             -�и
+  386  1        float fDeadTime = MainSettings.mDeadTime;
+  387  1        float fDeadTimeExt = MainSettingsExt.mDeadTime;
+  388  1        
+  389  1        float fCntLimit = 0,fCntLimitExt = 0;
+  390  1        
+  391  1          fCntLimit = 1.0 / fDeadTime - 1.0f;
+  392  1          fCntLimitExt = 1.0 / fDeadTimeExt - 1.0f;
+  393  1        
+  394  1        #ifdef RANGE3 
+  395  1      
+  396  1          
+  397  1          if(Process_GetExternalRange() == EXT_ON)
+  398  1            for(i = 0;i<SENSORS;i++)if(sensorCnt[i] > fCntLimit)sensorCnt[i] = fCntLimit;
+  399  1          else
+  400  1            for(i = 0;i<SENSORS;i++)if(sensorCnt[i] > fCntLimit)sensorCnt[i] = fCntLimitExt;
+  401  1        #else
+                  for(i = 0;i<SENSORS;i++)
+                    if(sensorCnt[i] > fCntLimit)sensorCnt[i] = fCntLimit;
+                #endif
+  405  1        
+  406  1          leftPart = 1.0f / (MainSettings.mSensivity * MainSettings.mEfficiency * 1);
+  407  1            
+  408  1            for(i = 0;i<SENSORS;i++)
+  409  1            {
+  410  2              numerator = sensorCnt[i] * MainSettings.correctionFactors[i];
+  411  2              denominator = 1.0f - (sensorCnt[i] * MainSettings.mDeadTime);
+  412  2              
+  413  2              rightPart = rightPart + (numerator / denominator);
+  414  2            }
+  415  1        dose = leftPart * rightPart;
+  416  1        
+  417  1        return dose;
+  418  1      }
+  419         
+  420         //подсчёт МД по формуле суммы трёх максимумов
+  421         float Process_CalculateMaximumSumDoseRate()
+  422         {
+  423  1        float fResult = 0;
+C166 COMPILER V7.53.0.0, PROCESS                                                           03/26/2018 10:37:42 PAGE 8   
+
+  424  1        float sensorCorrectCnt[SENSORS];
+  425  1        float fMax = 0;
+  426  1        uint8 i = 0,j = 0;
+  427  1        
+  428  1        //проверка на максимальную скорость счёта в массиве счётч
+             -иков
+  429  1        /*#ifdef RANGE3 
+  430  1          uint16  rangeMax = (uint16)( (MainSettings.rangeLimits >> 16) & 0xFFFF);
+  431  1        
+  432  1          for(i = 0;i<SENSORS;i++)
+  433  1            if(sensorCnt[i] > rangeMax)sensorCnt[i] = rangeMax;
+  434  1        #endif*/
+  435  1        
+  436  1        memset(sensorCorrectCnt,0,sizeof(float) * SENSORS);
+  437  1        
+  438  1          //получаем откорректированные счета
+  439  1          for(i = 0;i<SENSORS;i++){
+  440  2            sensorCorrectCnt[i] = (sensorCnt[i] * MainSettings.correctionFactors[i]) / (1.0f - (sensorCnt[i] * Main
+             -Settings.mDeadTime));
+  441  2          }
+  442  1          //сортируем массив по возрастанию
+  443  1            for(i = 0;i<SENSORS - 1;i++){
+  444  2              for(j = 0;j<SENSORS - i - 1;j++){
+  445  3                if(sensorCorrectCnt[j] > sensorCorrectCnt[j+1]){
+  446  4                  fMax = sensorCorrectCnt[j];
+  447  4                  sensorCorrectCnt[j] = sensorCorrectCnt[j+1];
+  448  4                  sensorCorrectCnt[j+1] = fMax;
+  449  4                }
+  450  3              }
+  451  2            }
+  452  1          Debug_SetSortSensorsData((uint8*)sensorCorrectCnt);
+  453  1            
+  454  1          fResult = (1.0f / (3.0f * MainSettings.mSensivity)) * (sensorCorrectCnt[11] + sensorCorrectCnt[10] + sen
+             -sorCorrectCnt[9]);
+  455  1            
+  456  1          return fResult;
+  457  1      }
+  458         //подсчёт МД по логарифмической формуле
+  459         float Process_CalculateLogDoseRate()
+  460         {
+  461  1        float fReturn = 0;
+  462  1        float sensorsCorrectionSum = 0;
+  463  1        
+  464  1        uint8 i = 0;
+  465  1        
+  466  1          for(i = 0;i<SENSORS;i++){
+  467  2            sensorsCorrectionSum +=(-MainSettingsExt.correctionFactors[i] * (log(1.0 - sensorCnt[i] * MainSettingsE
+             -xt.pulsePwrPeriod)/MainSettingsExt.pulseDuration));
+  468  2          }
+  469  1          
+  470  1          fReturn = 1.0 / (MainSettingsExt.mSensivity * MainSettingsExt.mEfficiency) * sensorsCorrectionSum;
+  471  1        
+  472  1        return fReturn;
+  473  1      }
+  474         
+  475         float Process_CalculateCountingRate()
+  476         {
+  477  1        float cntRate = 0;
+  478  1        uint16  i = 0;
+  479  1        
+  480  1          for(i = 0;i<SENSORS;i++)
+  481  1              cntRate += sensorCnt[i];
+C166 COMPILER V7.53.0.0, PROCESS                                                           03/26/2018 10:37:42 PAGE 9   
+
+  482  1            cntRate = cntRate / (float)(MainSettings.mEfficiency /* SENSORS*/); //06.03.17 - корректиров
+             -ка формулы рассчёта средней скрорости счёта
+  483  1        
+  484  1        if(firstMeasureCounter < FIRST_MEASURE_TIME)
+  485  1          firstMeasureCounter++;
+  486  1        
+  487  1        return cntRate;
+  488  1      }
+  489         
+  490         void Process_Start()
+  491         {
+  492  1        //перенастройка ШИМ для 3 диапазона
+  493  1        #ifdef RANGE3
+  494  1          if(Process_GetExternalRange())PWM2();
+  495  1          else PWM1();
+  496  1        #endif
+  497  1        
+  498  1        Process_Stop();
+  499  1        
+  500  1        sliderCounter = 0;
+  501  1        firstMeasureCounter = 0;
+  502  1        
+  503  1        memset(sensorCnt,0,sizeof(uint16) * SENSORS);
+  504  1        memset(sensorCntCopy,0,sizeof(uint16) * SENSORS);
   505  1        
-  506  1          - проверяем текущий заданных диапазон. Если это 1,2,3 - то за
-             -пускаем измерение в соответствующем диапазоне
-  507  1          -
-  508  1        */
+  506  1        memset(sliderQuery,0,sizeof(float) * SLIDER_SIZE);
+  507  1        /*
+  508  1        Алгоритм запуска измерений
   509  1        
-  510  1        
-  511  1        T0 = 0xFFFF;
-  512  1        T7R = 1;
-  513  1        T8R = 1;
+  510  1          - проверяем текущий заданных диапазон. Если это 1,2,3 - то за
+             -пускаем измерение в соответствующем диапазоне
+  511  1          -
+  512  1        */
+  513  1        
   514  1        
-  515  1        HV_STATE = 1;
-  516  1        //TO_DO ожидаем нарастание высокого напряжения
-  517  1        
+  515  1        T0 = 0xFFFF;
+  516  1        T7R = 1;
+  517  1        T8R = 1;
   518  1        
-  519  1        T0R = 1;
-  520  1        
-  521  1      
-  522  1      }
-  523         
-  524         void Process_Stop()
-  525         {
-  526  1        //PWM OFF
-  527  1        T7R = 0;
-  528  1        T8R = 0;
-  529  1        //MAINTIMER OFF
-  530  1        T0R = 0;
-  531  1        //H-Bridge off
-  532  1          KEY11_L = 0; KEY11_H = 0;
-  533  1          KEY12_L = 0; KEY12_H = 0;
-  534  1        HV_STATE = 0;
-  535  1        
-  536  1        
-  537  1      }
+  519  1        HV_STATE = 1;
+  520  1        //TO_DO ожидаем нарастание высокого напряжения
+  521  1        
+  522  1        
+  523  1        T0R = 1;
+  524  1        
+  525  1      
+  526  1      }
+  527         
+  528         void Process_Stop()
+  529         {
+  530  1        //PWM OFF
+  531  1        T7R = 0;
+  532  1        T8R = 0;
+  533  1        //MAINTIMER OFF
+  534  1        T0R = 0;
+  535  1        //H-Bridge off
+  536  1          KEY11_L = 0; KEY11_H = 0;
+  537  1          KEY12_L = 0; KEY12_H = 0;
+  538  1        HV_STATE = 0;
+  539  1        
+  540  1        
+  541  1      }
+C166 COMPILER V7.53.0.0, PROCESS                                                           03/26/2018 10:37:42 PAGE 10  
+
 
 
 MODULE INFORMATION:   INITIALIZED  UNINITIALIZED
-  CODE SIZE        =        2338     --------
-C166 COMPILER V7.53.0.0, PROCESS                                                           03/15/2018 15:04:25 PAGE 10  
-
+  CODE SIZE        =        2432     --------
   NEAR-CONST SIZE  =           9     --------
   FAR-CONST SIZE   =    --------     --------
   HUGE-CONST SIZE  =    --------     --------
   XHUGE-CONST SIZE =    --------     --------
-  NEAR-DATA SIZE   =         175     --------
+  NEAR-DATA SIZE   =          63     --------
   FAR-DATA SIZE    =    --------     --------
   XHUGE-DATA SIZE  =    --------     --------
   IDATA-DATA SIZE  =    --------     --------

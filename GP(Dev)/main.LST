@@ -1,4 +1,4 @@
-C166 COMPILER V7.53.0.0, MAIN                                                              03/15/2018 15:00:15 PAGE 1   
+C166 COMPILER V7.53.0.0, MAIN                                                              03/26/2018 10:37:42 PAGE 1   
 
 
 C166 COMPILER V7.53.0.0, COMPILATION OF MODULE MAIN
@@ -62,7 +62,7 @@ COMPILER INVOKED BY: C:\Keil\C166\BIN\C166.EXE main.c BROWSE MOD167 DEBUG TABS(2
    53  1        DP2 = 0x0000;
    54  1        
    55  1        //P7 |= 0x0000;
-C166 COMPILER V7.53.0.0, MAIN                                                              03/15/2018 15:00:15 PAGE 2   
+C166 COMPILER V7.53.0.0, MAIN                                                              03/26/2018 10:37:42 PAGE 2   
 
    56  1        DP7 |= 0x0004;
    57  1          
@@ -126,7 +126,7 @@ COMPILER INVOKED BY: C:\Keil\C166\BIN\C166.EXE main.c BROWSE MOD167 DEBUG TABS(2
   113  1        //проверка на перезапуск
   114  1        if(SWR)Protocol_StartMsg();
   115  1      
-C166 COMPILER V7.53.0.0, MAIN                                                              03/15/2018 15:00:15 PAGE 3   
+C166 COMPILER V7.53.0.0, MAIN                                                              03/26/2018 10:37:42 PAGE 3   
 
   116  1          while(1)
   117  1          {

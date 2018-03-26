@@ -1,4 +1,4 @@
-C166 COMPILER V7.53.0.0, SETTINGS                                                          03/15/2018 15:00:16 PAGE 1   
+C166 COMPILER V7.53.0.0, SETTINGS                                                          03/26/2018 10:37:43 PAGE 1   
 
 
 C166 COMPILER V7.53.0.0, COMPILATION OF MODULE SETTINGS
@@ -33,11 +33,11 @@ COMPILER INVOKED BY: C:\Keil\C166\BIN\C166.EXE settings.c BROWSE MOD167 DEBUG TA
    23  2        }
    24  1        //загрузка настроек для расширенного диапазона
    25  1        #ifdef RANGE3
-                if(!Settings_Load((uint16*)&MainSettingsExt,sizeof(tSettings),EXT_SET_ADDRESS)){
-                  Settings_DefautlExt();
-                  Settings_Save((uint16*)&MainSettingsExt,sizeof(tSettings),EXT_SET_ADDRESS);
-                }
-                #endif
+   26  1        if(!Settings_Load((uint16*)&MainSettingsExt,sizeof(tSettings),EXT_SET_ADDRESS)){
+   27  2          Settings_DefautlExt();
+   28  2          Settings_Save((uint16*)&MainSettingsExt,sizeof(tSettings),EXT_SET_ADDRESS);
+   29  2        }
+   30  1        #endif
    31  1      }
    32         
    33         void  Settings_Default()
@@ -54,15 +54,15 @@ COMPILER INVOKED BY: C:\Keil\C166\BIN\C166.EXE settings.c BROWSE MOD167 DEBUG TA
    44  1            MainSettings.mDeadTime = 0.0006f;
    45  1          
    46  1          #ifdef RANGE3
-                    MainSettings.mEfficiency = 8.17f;
-                    MainSettings.mSensivity = 1.26f;
-                    
-                      limitMin = 10;
-                      limitMax = 1280;
-                  #endif
+   47  1            MainSettings.mEfficiency = 8.17f;
+   48  1            MainSettings.mSensivity = 1.26f;
+   49  1            
+   50  1              limitMin = 10;
+   51  1              limitMax = 1280;
+   52  1          #endif
    53  1        
    54  1          #ifdef RANGE2
-C166 COMPILER V7.53.0.0, SETTINGS                                                          03/15/2018 15:00:16 PAGE 2   
+C166 COMPILER V7.53.0.0, SETTINGS                                                          03/26/2018 10:37:43 PAGE 2   
 
                     MainSettings.mEfficiency = 8.63f;
                     MainSettings.mSensivity = 383.f;
@@ -72,11 +72,11 @@ COMPILER INVOKED BY: C:\Keil\C166\BIN\C166.EXE settings.c BROWSE MOD167 DEBUG TA
                   #endif
    61  1          
    62  1          #ifdef RANGE1
-   63  1            MainSettings.mEfficiency = 8.83f;
-   64  1            MainSettings.mSensivity = 1405.f;
-   65  1              limitMin = 0;
-   66  1              limitMax = 1280;
-   67  1          #endif
+                    MainSettings.mEfficiency = 8.83f;
+                    MainSettings.mSensivity = 1405.f;
+                      limitMin = 0;
+                      limitMax = 1280;
+                  #endif
    68  1            MainSettings.rangeLimits = (uint32)((uint32)limitMax << 16)|limitMin;
    69  1        
    70  1        for(i = 0;i<FACTORS_COUNT;i++)
@@ -126,7 +126,7 @@ COMPILER INVOKED BY: C:\Keil\C166\BIN\C166.EXE settings.c BROWSE MOD167 DEBUG TA
   114  2          addr_counter++;
   115  2        }
   116  1      }
-C166 COMPILER V7.53.0.0, SETTINGS                                                          03/15/2018 15:00:16 PAGE 3   
+C166 COMPILER V7.53.0.0, SETTINGS                                                          03/26/2018 10:37:43 PAGE 3   
 
   117         uint8 Settings_Load(uint16  *pData,uint16 uDataSize,uint32  uAddress)
   118         {
@@ -190,7 +190,7 @@ COMPILER INVOKED BY: C:\Keil\C166\BIN\C166.EXE settings.c BROWSE MOD167 DEBUG TA
   176  1        uint16  *pSettings = (tSettings*)&MainSettings;
   177  1        uint16  dataSize = sizeof(MainSettings);
   178  1        uint16  chkSum = 0;
-C166 COMPILER V7.53.0.0, SETTINGS                                                          03/15/2018 15:00:16 PAGE 4   
+C166 COMPILER V7.53.0.0, SETTINGS                                                          03/26/2018 10:37:43 PAGE 4   
 
   179  1        
   180  1        for(i = 0;i<dataSize >> 1;i++){
@@ -211,7 +211,7 @@ COMPILER INVOKED BY: C:\Keil\C166\BIN\C166.EXE settings.c BROWSE MOD167 DEBUG TA
 
 
 MODULE INFORMATION:   INITIALIZED  UNINITIALIZED
-  CODE SIZE        =         768     --------
+  CODE SIZE        =         812     --------
   NEAR-CONST SIZE  =    --------     --------
   FAR-CONST SIZE   =    --------     --------
   HUGE-CONST SIZE  =    --------     --------
