@@ -74,17 +74,17 @@ void	Settings_DefautlExt()
 {
 	uint8 i = 0;
 
-	MainSettingsExt.pulsePwrPeriod = 100;	
-	MainSettingsExt.pulseDuration = 20;
+	MainSettingsExt.pulsePwrPeriod = 200;	
+	MainSettingsExt.pulseDuration = 10;
 	MainSettingsExt.modeValue = 1;
 	
 	MainSettingsExt.mDeadTime = 0.0006f;
-	MainSettingsExt.mEfficiency = 8.17f;
+	MainSettingsExt.mEfficiency = 3.0f;
 	MainSettingsExt.mSensivity = 1.26f;
 	MainSettingsExt.rangeLimits = (uint32)((uint32)4000 << 16)|150;
 	
 	for(i = 0;i<FACTORS_COUNT;i++)
-		MainSettingsExt.correctionFactors[i] = 1.0f;
+		MainSettingsExt.correctionFactors[i] = 1.5f;
 }
 
 void	Settings_Save(uint16	*pData,uint16 uDataSize,uint32	uAddress)

@@ -1,4 +1,4 @@
-C166 COMPILER V7.53.0.0, SETTINGS                                                          03/26/2018 10:37:43 PAGE 1   
+C166 COMPILER V7.53.0.0, SETTINGS                                                          03/26/2018 12:46:07 PAGE 1   
 
 
 C166 COMPILER V7.53.0.0, COMPILATION OF MODULE SETTINGS
@@ -62,7 +62,7 @@ COMPILER INVOKED BY: C:\Keil\C166\BIN\C166.EXE settings.c BROWSE MOD167 DEBUG TA
    52  1          #endif
    53  1        
    54  1          #ifdef RANGE2
-C166 COMPILER V7.53.0.0, SETTINGS                                                          03/26/2018 10:37:43 PAGE 2   
+C166 COMPILER V7.53.0.0, SETTINGS                                                          03/26/2018 12:46:07 PAGE 2   
 
                     MainSettings.mEfficiency = 8.63f;
                     MainSettings.mSensivity = 383.f;
@@ -86,17 +86,17 @@ COMPILER INVOKED BY: C:\Keil\C166\BIN\C166.EXE settings.c BROWSE MOD167 DEBUG TA
    74         {
    75  1        uint8 i = 0;
    76  1      
-   77  1        MainSettingsExt.pulsePwrPeriod = 100; 
-   78  1        MainSettingsExt.pulseDuration = 20;
+   77  1        MainSettingsExt.pulsePwrPeriod = 200; 
+   78  1        MainSettingsExt.pulseDuration = 10;
    79  1        MainSettingsExt.modeValue = 1;
    80  1        
    81  1        MainSettingsExt.mDeadTime = 0.0006f;
-   82  1        MainSettingsExt.mEfficiency = 8.17f;
+   82  1        MainSettingsExt.mEfficiency = 3.0f;
    83  1        MainSettingsExt.mSensivity = 1.26f;
    84  1        MainSettingsExt.rangeLimits = (uint32)((uint32)4000 << 16)|150;
    85  1        
    86  1        for(i = 0;i<FACTORS_COUNT;i++)
-   87  1          MainSettingsExt.correctionFactors[i] = 1.0f;
+   87  1          MainSettingsExt.correctionFactors[i] = 1.5f;
    88  1      }
    89         
    90         void  Settings_Save(uint16  *pData,uint16 uDataSize,uint32  uAddress)
@@ -126,7 +126,7 @@ COMPILER INVOKED BY: C:\Keil\C166\BIN\C166.EXE settings.c BROWSE MOD167 DEBUG TA
   114  2          addr_counter++;
   115  2        }
   116  1      }
-C166 COMPILER V7.53.0.0, SETTINGS                                                          03/26/2018 10:37:43 PAGE 3   
+C166 COMPILER V7.53.0.0, SETTINGS                                                          03/26/2018 12:46:07 PAGE 3   
 
   117         uint8 Settings_Load(uint16  *pData,uint16 uDataSize,uint32  uAddress)
   118         {
@@ -190,7 +190,7 @@ COMPILER INVOKED BY: C:\Keil\C166\BIN\C166.EXE settings.c BROWSE MOD167 DEBUG TA
   176  1        uint16  *pSettings = (tSettings*)&MainSettings;
   177  1        uint16  dataSize = sizeof(MainSettings);
   178  1        uint16  chkSum = 0;
-C166 COMPILER V7.53.0.0, SETTINGS                                                          03/26/2018 10:37:43 PAGE 4   
+C166 COMPILER V7.53.0.0, SETTINGS                                                          03/26/2018 12:46:07 PAGE 4   
 
   179  1        
   180  1        for(i = 0;i<dataSize >> 1;i++){
@@ -211,7 +211,7 @@ COMPILER INVOKED BY: C:\Keil\C166\BIN\C166.EXE settings.c BROWSE MOD167 DEBUG TA
 
 
 MODULE INFORMATION:   INITIALIZED  UNINITIALIZED
-  CODE SIZE        =         812     --------
+  CODE SIZE        =         806     --------
   NEAR-CONST SIZE  =    --------     --------
   FAR-CONST SIZE   =    --------     --------
   HUGE-CONST SIZE  =    --------     --------

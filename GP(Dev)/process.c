@@ -4,6 +4,8 @@
 #include "can.h"
 #include "debug.h"
 
+const uint16	tempSensorData_1[] = {29,22,31,1,0,0,2,1,0,2,18,20};
+
 uint8		firstMeasureCounter = 0;
 uint8		sliderCounter = 0;
 uint8		sliderMode = 0;
@@ -151,7 +153,13 @@ void	Process_MainProc()	interrupt T0IC_VEC
 	uint8	sliderMax = 2;	//параметр динамического заполнения движка
 	 
 	memcpy((uint8*)sensorCnt,(uint8*)sensorCntCopy,sizeof(uint16) * SENSORS);
-	 
+	
+	/*
+	Тестовые данные для проверки МД
+	*/
+	memcpy((uint8*)sensorCnt,(uint8*)tempSensorData_1,sizeof(uint16) * SENSORS);
+	
+
 	#ifdef RANGE3 //для 38-х счётчиков расчёт по другой формуле
 		if(Process_GetExternalRange() == EXT_ON)
 			currentDose = Process_CalculateLogDoseRate();
@@ -458,16 +466,46 @@ float Process_CalculateMaximumSumDoseRate()
 //подсчёт МД по логарифмической формуле
 float Process_CalculateLogDoseRate()
 {
+	uint8 i = 0,j = 0;
+	
+	uint16 uMax = 0;
+	uint16	sensorCorrectCnt[SENSORS];	//сортируемый массив счётчиков
+	
+	float fCurCorrFactor = 0;
+	float	fSortCorrFactors[SENSORS];
 	float fReturn = 0;
 	float	sensorsCorrectionSum = 0;
 	
-	uint8 i = 0;
+	float fPulseDuration = MainSettingsExt.pulseDuration / 1000000.0f;
+	float fPulsePeriod = MainSettingsExt.pulsePwrPeriod / 1000000.0f;
 	
-		for(i = 0;i<SENSORS;i++){
-			sensorsCorrectionSum +=(-MainSettingsExt.correctionFactors[i] * (log(1.0 - sensorCnt[i] * MainSettingsExt.pulsePwrPeriod)/MainSettingsExt.pulseDuration));
+	memcpy((uint8*)sensorCorrectCnt,(uint8*)sensorCnt,sizeof(uint16) * SENSORS);
+	memcpy((uint8*)fSortCorrFactors,(uint8*)MainSettingsExt.correctionFactors,sizeof(float) * SENSORS);
+	
+	//сортируем массив по возрастанию
+			for(i = 0;i<SENSORS - 1;i++){
+				for(j = 0;j<SENSORS - i - 1;j++){
+					if(sensorCorrectCnt[j] > sensorCorrectCnt[j+1]){
+						uMax = sensorCorrectCnt[j];
+						fCurCorrFactor = fSortCorrFactors[j];
+						
+						sensorCorrectCnt[j] = sensorCorrectCnt[j+1];	
+						fSortCorrFactors[j] = fSortCorrFactors[j+1];	//массив поправочных сортируем следом за массивом счетов
+												
+						sensorCorrectCnt[j+1] = uMax;
+						fSortCorrFactors[j+1] = fCurCorrFactor;
+					}
+				}
+			}
+	
+	
+	
+	//считаем по 3-м последним(максимальные счета)
+		for(i = 9;i<SENSORS;i++){
+			sensorsCorrectionSum +=( /*MainSettingsExt.correctionFactors[i]*/fSortCorrFactors[i] * (log(1.0 - sensorCorrectCnt[i] *  fPulsePeriod)/ fPulseDuration));
 		}
 		
-		fReturn = 1.0 / (MainSettingsExt.mSensivity * MainSettingsExt.mEfficiency) * sensorsCorrectionSum;
+		fReturn = -1.0 / (MainSettingsExt.mSensivity * MainSettingsExt.mEfficiency) * sensorsCorrectionSum;
 	
 	return fReturn;
 }
